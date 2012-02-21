@@ -1,0 +1,78 @@
+User README for Gonville
+========================
+
+This directory contains Gonville, a font of musical symbols drawn by
+Simon Tatham and usable as a drop-in replacement for GNU Lilypond's
+default symbol set.
+
+Installation
+------------
+
+At the time of writing this, GNU Lilypond has no convenient
+command-line option for specifying a different font of musical
+symbols. It expects to find its symbols in the 'fonts' subdirectory
+of its data directory, which is typically somewhere beneath
+/usr/share/lilypond.
+
+However, one thing you can do is to configure the location of that
+data directory using an environment variable. Therefore, the
+installation script for Gonville works by constructing a copy of the
+whole Lilypond data directory, filled with symbolic links pointing
+at the original files; then it replaces the 'fonts' subdirectory
+with one containing Gonville instead of Lilypond's standard font.
+
+So, to install Gonville, you should:
+
+ - First choose a pathname for the replacement data directory.
+
+ - Run the 'lilysetup' script with three arguments. The first
+   argument should point at the 'lilyfonts' directory in Gonville's
+   release distribution; the second should be the original Lilypond
+   data directory; the third should be the new directory name. For
+   example, I keep my replacement Lilypond data directory in my home
+   directory, so I might run
+   
+   ./lilysetup lilyfonts /usr/share/lilypond/2.10.33 /home/simon/share/gonville
+
+ - Now set the environment variable LILYPOND_DATADIR to the pathname
+   of the new directory. In my case, for example, I would then run
+
+   export LILYPOND_DATADIR=/home/simon/share/gonville
+
+   Then running Lilypond in the normal way should generate output
+   using the Gonville symbols.
+
+ - If you want Lilypond to default to using Gonville, you will need
+   to add that environment variable setting to some piece of
+   persistent configuration on your system. I put the above 'export'
+   command in my '.bashrc' file, but the details may depend on your
+   local system.
+
+If you're running Lilypond on Windows, I'm afraid no equivalent of
+the 'lilysetup' script is currently provided. You'll have to do it
+by hand using the Windows Explorer or the Command Prompt: find the
+Lilypond data directory, make a complete copy of it, delete the
+'fonts' subdirectory in the copy, move Gonville's 'lilyfonts'
+directory into the copy and rename it to 'fonts'.
+
+Supported features
+------------------
+
+Gonville has been tested against Lilypond 2.10.33 (the version
+included in Debian 5.0), 2.12.2 and 2.13.5. It supports all the same
+symbols as the standard fonts for those versions of Lilypond, except
+for the following omissions:
+
+ - Solfa note head shapes (set using shapeNoteStyles) are not
+   supported.
+
+ - The 'longa' note (twice as long as a breve) is not supported.
+
+ - Ancient notation (mensural, Gregorian chant etc) is not
+   supported.
+
+In addition, Gonville may not work with other versions of Lilypond,
+which may have changed the names under which they expect to be able
+to find symbols in the font file. I intend to try to keep Gonville
+up to date, but please let me know if there are any support problems
+with a more recent version of Lilypond.

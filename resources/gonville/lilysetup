@@ -1,0 +1,32 @@
+#!/bin/sh 
+
+# Setup utility for using the Gonville music font in Lilypond.
+# Creates a symlink-farm 'copy' of the Lilypond data directory, but
+# with the 'fonts' subdirectory replaced with Gonville.
+
+# usage: lilysetup <fontdir> <oldlilydir> <lilydir>
+#
+# where:  fontdir    is the lilyfonts directory output from './glyphs.py -lily'
+#         oldlilydir is the current default LILYPOND_DATADIR, typically
+#                    /usr/share/lilypond/2.10.33/ or something similar
+#         newlilydir is a directory usable as LILYPOND_DATADIR
+
+fontdir="$1"
+oldlilydir="$2"
+newlilydir="$3"
+
+rm -rf "$newlilydir"
+mkdir "$newlilydir"
+(cd "$oldlilydir"; find . -type d -print) | \
+  perl -ne 'BEGIN{$d=shift@ARGV;}chomp; s/\.\/// and mkdir "$d/$_"' "$newlilydir"
+(cd "$oldlilydir"; find . ! -type d -print) | \
+  perl -ne 'BEGIN{$s=shift@ARGV;$d=shift@ARGV;}chomp; s/\.\/// and symlink "$s/$_", "$d/$_"' "$oldlilydir" "$newlilydir"
+rm -rf "$newlilydir"/fonts
+cp -r "$fontdir" "$newlilydir"/fonts
+
+# If there's a file called 'lilysetup.local' in the same directory
+# as this script, source it. This allows a user, while they're
+# replicating the Lilypond data directory anyway, to make other
+# configuration changes as well as using the Gonville font.
+localscript="`dirname "$0"`/lilysetup.local"
+if test -f "$localscript"; then . "$localscript"; fi
