@@ -11,7 +11,8 @@ function SubitoNote(note) {
 
 SubitoNote.prototype.render = function(renderer, measure) {
   var headGlyph = this.getHeadGlyph();
-  var diff = -1 * (this.note.key(true)-Subito.C4)/2; // '/2' because we count in whole lines
+  // We divide by two, so that we count in whole lines
+  var diff = -1 * (this.note.key(true)-Subito.C4)/2; 
   var clefC4 = measure.clef.c4;
   var pos = renderer.settings.stave.linespace*(clefC4+diff), i, length;
   // Render note head

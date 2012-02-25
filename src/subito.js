@@ -20,7 +20,9 @@ Subito.prototype.render = function() {
 };
 
 Subito.prototype.parse = function(source, type) {
-  if(!source || !type) return false;
+  if(!source || !type) 
+    return false;
+
   type = Subito.ParserTable[type.toLowerCase()];
 
   if(typeof Subito.Parser[type] === 'function') {
@@ -54,4 +56,19 @@ Subito.Exception = function(message) {
   this.message = String(message) || 'Unknown Subito Exception';
 };
 
-Subito.C4 = 24; // The (new teoria.note('c4')).getKeyNumber(true) value of C4
+Subito.C4 = 24; // The teoria.note('c4').key(true) value of C4
+
+//=include score.js
+//=include system.js
+//=include voice.js
+//=include stave.js
+//=include measure.js
+//=include clef.js
+//=include note.js
+//=include renderer.js
+//=include backends/svg.js
+//=include fonts/gonville.js
+//=include parsers/lilypond.js
+//=include parsers/musicjson.js
+//=include parsers/musicxml.js
+//=include parsers/subitoscript.js
