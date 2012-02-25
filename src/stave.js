@@ -14,11 +14,11 @@ SubitoStave.prototype.render = function(renderer) {
   var bbox = this.getBoundingBox(), i, length;
   
   for(i = 0, length = this.measures.length; i < length; i++) {
-    if(i == 0) {
+    if(i === 0) {
       renderer.settings.measure.renderClef = true;
       renderer.settings.measure.renderTime = true;
       renderer.settings.measure.renderKey = true;
-    } else if(i == 1) {
+    } else if(i === 1) {
       renderer.settings.measure.renderClef = false;
       renderer.settings.measure.renderTime = false;
       renderer.settings.measure.renderKey = false;

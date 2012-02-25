@@ -5,7 +5,6 @@
 function SubitoClef(sign) {
   if(!SubitoClef.Clefs[sign]) {
     throw new Subito.Exception('Invalid Clef type');
-    sign = 'g';
   }
   
   this.sign = sign;
@@ -15,7 +14,8 @@ function SubitoClef(sign) {
 }
 
 SubitoClef.prototype.render = function(renderer, measure) {
-  renderer.context.renderGlyph(this.glyph, 0, renderer.settings.stave.linespace*this.line);
+  renderer.context.renderGlyph(this.glyph, 0,
+      renderer.settings.stave.linespace*this.line);
 };
 
 SubitoClef.Clefs = {

@@ -1,12 +1,12 @@
 var path    = require('path'),
     fs      = require('fs'),
     mingler = require('mingler'),
-    colors  = null;
+    colors;
 
 try {
   colors = require('colors');
 } catch(e) {
-  colors = null;
+  // Nothing to do...
 }
 
 // Default Settings
@@ -33,17 +33,38 @@ var kBuildFilename = 'subito.js';
 var kBuildMinFilename = 'subito.min.js';
 
 // Utility function which respects the 'silent' setting
-function log(text, type, acolor) {
+function log(text, type, acolor, nolabel) {
   type = (type in console && typeof console[type] == 'function') ? type : 'info';
 
   if(!settings.silent) {
-    text = ' ['+type.toUpperCase()+'] ' + text;
+    if(!nolabel) {
+      text = ' ['+type.toUpperCase()+'] ' + text;
+    } else {
+      text = ' ' + text;
+    }
+
     if(settings.colors && colors) {
       color = logcolors[acolor || type] || 'grey';
       console[type](text[color]);
     } else {
       console[type](text);
     }
+  }
+}
+
+// Utility function which collects files in  directory recursively
+// Inspired by jshint's source
+function collect(filepath, files, ignore) {
+  if(ignore && filepath.search(ignore) != -1) {
+    return false;
+  }
+
+  if(fs.statSync(filepath).isDirectory()) {
+    fs.readdirSync(filepath).forEach(function(f) {
+      collect(path.join(filepath, f), files, ignore);
+    });
+  } else if(filepath.match(/\.js$/)) {
+    files.push(filepath)
   }
 }
 
@@ -143,3 +164,55 @@ task('build', function() {
   });
 });
 
+// Lints the files according to .jshintrc
+desc('Lint all files according to coding standards');
+task('lint', function() {
+  var jshint;
+  try {
+    jshint = require('jshint');
+  } catch(e) {
+    log('jshint doesn\'t appear to be installed. Do a `npm install -g jshint`',
+      'error');
+    return false;
+  }
+
+  // Load configuration
+  var config = fs.readFileSync('./.jshintrc', 'utf8');
+  config = JSON.parse(config);
+
+  // List all files in src/
+  var files = [], errors = [], errorfilecount = 0;
+  collect('src/', files, /fonts\/|fonts\\.*/); 
+  files.forEach(function(file) {
+    var content, results;
+    try {
+      content = fs.readFileSync(file, 'utf8');
+    } catch(e) {
+      log('Unable to open file ' + file, 'error');
+    }
+
+    content = content.replace(/^\uFEFF/, ''); // Remove Unicode BOM
+    if(!jshint.JSHINT(content, config)) {
+      errorfilecount++;
+      jshint.JSHINT.errors.forEach(function(error) {
+        if(error) {
+          errors.push({file: file, error: error});
+        }
+      });
+    }
+  });
+
+  log(files.length.toString() + ' files linted, ' + (files.length-errorfilecount)
+    + ' successfully, ' + errorfilecount + ' with errors!', 'info');
+  errors.forEach(function(error) {
+    log(error.file + ': line ' + error.error.line 
+        + ', col ' + error.error.character + ', ' + error.error.reason, 
+        'error', 'grey', true);
+  });
+
+  if(errors.length == 0) {
+    log('Lint passed', 'info');
+  } else {
+    log('Lint failed!', 'error');
+  }
+});

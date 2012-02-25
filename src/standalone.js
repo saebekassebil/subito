@@ -11,7 +11,7 @@
         if(child.tagName && child.tagName.toLowerCase() == 'script') {
           var type = child.getAttribute('type') || null;
           if(!type) {
-            return
+            return false;
           }
           
           type = type.split('/');
@@ -21,7 +21,7 @@
           subito.parse(child.innerHTML);
           
           window._subitos = window._subitos || [];
-          window._subitos.push(subito); 
+          window._subitos.push(subito);
         }
       }
     }
@@ -39,8 +39,8 @@
     }
 
     for(i = 0, length = svg.length; i < length; i++) {
-      classname = (svg[i].className.baseVal) 
-                    ? svg[i].className.baseVal : svg[i].className;
+      classname = (svg[i].className.baseVal) ? svg[i].className.baseVal :
+                                               svg[i].className;
 
       if(classname.indexOf('subito') != -1) {
         createSubitoInstance(svg[i]);
@@ -53,7 +53,7 @@
   } else if(window.attachEvent) {
     window.attachEvent('onload', listener);
   } else {
-    throw new Subito.Exception('UnsupportedPlatform', 'This platform is not '
-            + 'supported by Subito');
+    throw new Subito.Exception('UnsupportedPlatform', 'This platform is not ' +
+                                'supported by Subito');
   }
 })();

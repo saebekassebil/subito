@@ -1,12 +1,14 @@
 function SubitoRenderer(canvas, settings) {
-  var canvasTagName = (canvas && canvas.tagName) ? canvas.tagName.toLowerCase() : null;
+  var canvasTagName = (canvas && canvas.tagName) ?
+    canvas.tagName.toLowerCase() : null;
   
   if(canvasTagName === 'canvas') {
     this.context = canvas.getContext('2d');
   } else if(canvasTagName === 'svg') {
     this.context = new SubitoSVGContext(canvas, this);
   } else {
-    throw new Subito.Exception("Invalid canvas. Must be either <canvas> or <svg> element");
+    var msg = "Invalid canvas. Must be either <canvas> or <svg> element";
+    throw new Subito.Exception(msg);
   }
 }
 
@@ -41,7 +43,7 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
     };
 
 
-    if(Subito.Settings['debug']) {
+    if(Subito.Settings.debug) {
       this.fillStyle = "#FF0000";
       this.beginPath();
       this.arc(x, y, 2, 0, Math.PI*2, true);
@@ -54,33 +56,41 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
     this.beginPath();
     for(var i = 0, length = path.length; i < length; i++) {
       switch(path[i]) {
-      case 'M': {     
+      case 'M':
         coords.coords.x = parseFloat(path[++i]);
         coords.coords.y = parseFloat(path[++i]);
 
-        this.moveTo(coords.start.x + (coords.coords.x/font.resolution), coords.start.y + (coords.coords.y/font.resolution));
-      } break;
+        this.moveTo(coords.start.x + (coords.coords.x/font.resolution),
+                    coords.start.y + (coords.coords.y/font.resolution));
 
-      case 'l': {
+        break;
+
+      case 'l':
         coords.coords.x += parseFloat(path[++i]);
         coords.coords.y += parseFloat(path[++i]);
 
-        this.lineTo(coords.start.x + (coords.coords.x/font.resolution), coords.start.y + (coords.coords.y/font.resolution));
-      } break;
+        this.lineTo(coords.start.x + (coords.coords.x/font.resolution),
+                    coords.start.y + (coords.coords.y/font.resolution));
 
-      case 'h': {
+        break;
+
+      case 'h':
         coords.coords.x += parseFloat(path[++i]);
 
-        this.lineTo(coords.start.x + (coords.coords.x/font.resolution), coords.start.y + (coords.coords.y/font.resolution));
-      } break;
+        this.lineTo(coords.start.x + (coords.coords.x/font.resolution),
+                    coords.start.y + (coords.coords.y/font.resolution));
 
-      case 'v': {
+        break;
+
+      case 'v':
         coords.coords.y += parseFloat(path[++i]);
 
-        this.lineTo(coords.start.x + (coords.coords.x/font.resolution), coords.start.y + (coords.coords.y/font.resolution));
-      } break;
+        this.lineTo(coords.start.x + (coords.coords.x/font.resolution),
+                    coords.start.y + (coords.coords.y/font.resolution));
 
-      case 'q': {
+        break;
+
+      case 'q':
 
         coords.controlpoint.x = coords.coords.x + parseFloat(path[++i]);
         coords.controlpoint.y = coords.coords.y + parseFloat(path[++i]);
@@ -88,26 +98,41 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         coords.coords.x += parseFloat(path[++i]);
         coords.coords.y += parseFloat(path[++i]);
 
-        this.quadraticCurveTo(coords.start.x + (coords.controlpoint.x/font.resolution), coords.start.y + (coords.controlpoint.y/font.resolution), coords.start.x + (coords.coords.x/font.resolution), coords.start.y + (coords.coords.y/font.resolution));
-      } break;
+        this.quadraticCurveTo(
+            coords.start.x + (coords.controlpoint.x/font.resolution),
+            coords.start.y + (coords.controlpoint.y/font.resolution),
+            coords.start.x + (coords.coords.x/font.resolution),
+            coords.start.y + (coords.coords.y/font.resolution));
+      
+        break;
 
-      case 't': {
-        if(coords.controlpoint.x === null || coords.controlpoint.y === null) return;
+      case 't':
+        if(coords.controlpoint.x === null || coords.controlpoint.y === null) {
+          return;
+        }
 
-        coords.controlpoint.x = coords.coords.x + (coords.coords.x - coords.controlpoint.x);
-        coords.controlpoint.y = coords.coords.y + (coords.coords.y - coords.controlpoint.y);
+        coords.controlpoint.x = coords.coords.x +
+            (coords.coords.x - coords.controlpoint.x);
+        coords.controlpoint.y = coords.coords.y +
+            (coords.coords.y - coords.controlpoint.y);
 
         coords.coords.x += parseFloat(path[++i]);
         coords.coords.y += parseFloat(path[++i]);
 
-        this.quadraticCurveTo(coords.start.x + (coords.controlpoint.x/font.resolution), coords.start.y + (coords.controlpoint.y/font.resolution), coords.start.x + (coords.coords.x/font.resolution), coords.start.y + (coords.coords.y/font.resolution));
-      } break;
+        this.quadraticCurveTo(
+            coords.start.x + (coords.controlpoint.x/font.resolution),
+            coords.start.y + (coords.controlpoint.y/font.resolution),
+            coords.start.x + (coords.coords.x/font.resolution),
+            coords.start.y + (coords.coords.y/font.resolution));
 
-      case 'z': {
+        break;
+
+      case 'z':
         this.closePath();
-      } break;
+        break;
       }
     }
+
     this.strokeStyle = "#000000";
     this.stroke();
   };

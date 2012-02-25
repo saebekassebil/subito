@@ -15,8 +15,9 @@ Subito.prototype.render = function() {
 };
 
 Subito.prototype.parse = function(source, type) {
-  if(!source || !type) 
+  if(!source || !type) {
     return false;
+  }
 
   type = Subito.ParserTable[type.toLowerCase()];
 

@@ -15,7 +15,8 @@ var SubitoSVGContext = (function() {
     
     this.attributes = {
       stroke: 'black',
-      transform: 'translate('+ this.renderer.settings.margin +', '+ this.renderer.settings.margin +')'
+      transform: 'translate('+ this.renderer.settings.margin +
+                  ', '+ this.renderer.settings.margin +')'
     };
     
     this.font = {
@@ -126,7 +127,11 @@ var SubitoSVGContext = (function() {
       this.position.x += glyph.hoz*font.scale.x || 0;
       var path = create('path');
       path.setAttribute('d', glyph.path);
-      path.setAttribute('transform', 'translate('+ this.renderer.settings.margin +', '+ this.renderer.settings.margin +') translate('+x+', '+y+') scale('+font.scale.x+', '+font.scale.y+')');
+      path.setAttribute('transform',
+          'translate(' + this.renderer.settings.margin +
+          ', ' + this.renderer.settings.margin +
+          ') translate(' + x + ', ' + y + ') scale(' +
+          font.scale.x + ', ' + font.scale.y + ')');
       this.context.appendChild(path);
     },
     

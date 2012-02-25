@@ -1,4 +1,4 @@
-/** 
+/**
  * SubitoSystem
  *  - Describes a music system
  */
@@ -13,13 +13,13 @@ SubitoSystem.prototype.render = function(renderer) {
     this.staves[i].render(renderer);
   }
   
-  if(this.staves.length > 1) {
-    // Render brace '{'
+  /*if(this.staves.length > 1) {
+    // TODO: Render brace '{'
   }
   
   if(this.instrument && this.instrument.name) {
-    // Render instrument name
-  }
+    // TODO: Render instrument name
+  }*/
 };
 
 SubitoSystem.prototype.getBoundingBox = function() {

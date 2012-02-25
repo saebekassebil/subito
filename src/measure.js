@@ -37,7 +37,8 @@ SubitoMeasure.prototype.getBoundingBox = function(parent) {
     return this.cachedBBox;
   }
   
-  var bbox = {left: {x:0, y:0}, right: {x:0, y:0}}, clef = this.clef || parent.clef, childrenbbox;
+  var bbox = {left: {x:0, y:0}, right: {x:0, y:0}},
+      clef = this.clef || parent.clef, childrenbbox;
   for(var i = 0, length = this.elements.length; i < length; i++) {
     childrenbbox = this.elements[i].getBoundingBox();
     bbox.right.x += childrenbbox.right.x;
