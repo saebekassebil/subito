@@ -4,7 +4,8 @@
  */
 
 function Subito(canvas, settings) {
-  this.scores = [], this.canvas = canvas;
+  this.scores = [];
+  this.canvas = canvas;
   
   this.renderer = new SubitoRenderer(canvas, settings);
 }
@@ -50,6 +51,8 @@ Subito.Exception = function(code, message) {
 Subito.Exception.prototype = Error.prototype;
 
 Subito.C4 = 24; // The teoria.note('c4').key(true) value of C4
+
+//=include standalone.js
 
 //=include score.js
 //=include system.js

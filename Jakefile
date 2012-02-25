@@ -14,7 +14,8 @@ var settings = {
   minify: false,
   silent: false,
   colors: true,
-  nofont: false
+  font: false,
+  standalone: false
 };
 
 // Log colors if the npm module colors is available
@@ -57,8 +58,6 @@ task({'default': ['build']}, function(parameters) {
 desc('Concatenates all files into build/subito.js');
 task('build', function() {
   var params, exists, concatenation, filename;
-  log('Building Subito');
-
   filename = kBuildDir + kBuildFilename;
 
   // List settings
@@ -70,6 +69,8 @@ task('build', function() {
       log('Ignoring invalid settings: ' + el, 'warn');
     }
   });
+  
+  log('Building Subito');
 
   // Ensure build directory exists
   exists = path.existsSync(kBuildDir);
@@ -126,10 +127,13 @@ task('build', function() {
   });
 
   mingler.on('concatenate', function(feedback) {
-    if(settings.nofont && feedback.filename.indexOf('fonts/') == 0) {
+    if(!settings.font && feedback.filename.indexOf('fonts/') == 0) {
       feedback.discard();
       log('Ignoring font file ' + feedback.filename, 'info', 'grey');
-    } else {
+    } else if(!settings.standalone && feedback.filename == 'standalone.js') {
+      feedback.discard();
+      log('Ignoring standalone helper ' + feedback.filename, 'info', 'grey');
+    }  else {
       log("Concatenating: " + feedback.filename, 'info', 'grey');
     }
   });
