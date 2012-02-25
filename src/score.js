@@ -3,7 +3,8 @@
  *  - Describes a music score
  */
 function SubitoScore() {
-  this.meta = {}, this.systems = [];
+  this.meta = {};
+  this.systems = [];
 }
 
 SubitoScore.prototype.metadata = function(name, value) {
@@ -28,6 +29,6 @@ SubitoScore.prototype.render = function(renderer) {
   }
 };
 
-SubitoScore.prototype.getBoundingBox = function() {
+SubitoScore.prototype.getMetrics = function() {
   
 };

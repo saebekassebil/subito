@@ -1,14 +1,8 @@
 /**
- * Jakob Miland - 2011
- * 
- * Music Engraver written in JavaScript
+ * Jakob Miland - 2012
+ *  Subito - Music Engraver written in JavaScript
  */
 
-/**
- * The main subito class
- * 
- * @param canvas HTMLElement This can either be an <canvas> or and <svg> element.
- */
 function Subito(canvas, settings) {
   this.scores = [], this.canvas = canvas;
   
@@ -49,12 +43,11 @@ Subito.ParserTable = {
   'subitoscript':   'SubitoScript'
 };
 
-Subito.Exception = function(message) {
-  this.prototype = Error.prototype;
-  
-  this.name = 'SubitoException';
+Subito.Exception = function(code, message) {
+  this.code = code || 'SubitoException';
   this.message = String(message) || 'Unknown Subito Exception';
 };
+Subito.Exception.prototype = Error.prototype;
 
 Subito.C4 = 24; // The teoria.note('c4').key(true) value of C4
 

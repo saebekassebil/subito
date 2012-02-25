@@ -28,7 +28,8 @@ var logcolors = {
 var kBuildDir = 'build/';
 var kSourceDir = 'src/';
 var kMainFile = 'subito.js';
-var kBuildFileName = 'subito.js';
+var kBuildFilename = 'subito.js';
+var kBuildMinFilename = 'subito.min.js';
 
 // Utility function which respects the 'silent' setting
 function log(text, type, acolor) {
@@ -58,7 +59,7 @@ task('build', function() {
   var params, exists, concatenation, filename;
   log('Building Subito');
 
-  filename = kBuildDir + kBuildFileName;
+  filename = kBuildDir + kBuildFilename;
 
   // List settings
   params = Array.prototype.slice.call(arguments);
@@ -106,6 +107,7 @@ task('build', function() {
 
       log('Saved ' + ratio + '% of the original size');
       concatenation = compressed;
+      filename = kBuildDir + kBuildMinFilename;
     }
 
     // Write to file and close!
