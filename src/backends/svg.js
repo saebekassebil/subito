@@ -13,17 +13,6 @@ var SubitoSVGContext = (function() {
       scale: {x: 1, y: 1}
     };
     
-    this.attributes = {
-      stroke: 'black',
-      transform: 'translate('+ this.renderer.settings.margin +
-                  ', '+ this.renderer.settings.margin +')'
-    };
-    
-    this.font = {
-      family: 'Arial',
-      size: 16
-    };
-    
     this.stateStack = [];
   }
   
@@ -77,7 +66,8 @@ var SubitoSVGContext = (function() {
       }
       
       this.context.appendChild(path);
-      
+      this.path = '';
+
       return this;
     },
     
@@ -86,7 +76,6 @@ var SubitoSVGContext = (function() {
       var text = create('text');
       text.setAttribute('x', x);
       text.setAttribute('y', y);
-      
       text.textContent = string;
       
       this.context.appendChild(text);
@@ -109,7 +98,7 @@ var SubitoSVGContext = (function() {
     },
     
     /* Glyph API */
-    renderGlyph: function(glyphName, x, y, absolute) {
+    renderGlyph: function(glyphName, x, y) {
       var font = Subito.Fonts[this.renderer.settings.font];
       if(!font) {
         throw new Subito.Exception("Invalid Font");
@@ -119,19 +108,11 @@ var SubitoSVGContext = (function() {
       if(!glyph) {
         throw new Subito.Exception("Couldn't found glyph: " + glyphName);
       }
-      
-      if(!absolute) {
-        x += this.position.x;
-      }
 
-      this.position.x += glyph.hoz*font.scale.x || 0;
       var path = create('path');
       path.setAttribute('d', glyph.path);
       path.setAttribute('transform',
-          'translate(' + this.renderer.settings.margin +
-          ', ' + this.renderer.settings.margin +
-          ') translate(' + x + ', ' + y + ') scale(' +
-          font.scale.x + ', ' + font.scale.y + ')');
+          'scale(' + font.scale.x + ', ' + font.scale.y + ')');
       this.context.appendChild(path);
     },
     

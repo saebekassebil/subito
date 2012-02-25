@@ -3,41 +3,42 @@
  *  Subito - Music Engraver written in JavaScript
  */
 
-function Subito(canvas, settings) {
-  this.scores = [];
+function Subito(canvas) {
+  this.score = null;
   this.canvas = canvas;
   
-  this.renderer = new SubitoRenderer(canvas, settings);
+  if(canvas) {
+    this.renderer = new SubitoRenderer(canvas);
+  }
 }
-
-Subito.prototype.render = function() {
-  this.renderer.render(this.scores[0]); // Only support 1 score for now.
-};
 
 Subito.prototype.parse = function(source, type) {
   if(!source || !type) {
     return false;
   }
 
-  type = Subito.ParserTable[type.toLowerCase()];
+  type = Subito.ParserLanguages[type.toLowerCase()];
 
   if(typeof Subito.Parser[type] === 'function') {
-    var parser = new Subito.Parser[type](source), score;
+    var parser = new Subito.Parser[type](source);
     try {
-      score = parser.parseScore();
-      this.scores.push(score);
+      this.score = parser.parseScore();
     } catch(e) {
-      console.error(e);
-      return false;
+      return e;
     }
+
     return true;
   }
   
   return false;
 };
 
-Subito.Parser = {};
-Subito.ParserTable = {
+// Subito Fonts holds all font objects (Gonville pt.)
+Subito.Fonts = {};
+
+// Subito Parsers holds every parser available
+Subito.Parsers = {};
+Subito.ParserLanguages = {
   'musicjson':      'MusicJSON',
   'musicxml':       'MusicXML',
   'lilypond':       'LilyPond',
@@ -51,17 +52,9 @@ Subito.Exception = function(code, message) {
 };
 Subito.Exception.prototype = Error.prototype;
 
-Subito.C4 = 24; // The teoria.note('c4').key(true) value of C4
-
 //=include standalone.js
 
 //=include score.js
-//=include system.js
-//=include voice.js
-//=include stave.js
-//=include measure.js
-//=include clef.js
-//=include note.js
 //=include renderer.js
 //=include backends/svg.js
 //=include fonts/gonville.js

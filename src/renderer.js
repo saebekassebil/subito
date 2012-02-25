@@ -12,10 +12,6 @@ function SubitoRenderer(canvas, settings) {
   }
 }
 
-SubitoRenderer.prototype.render = function(score) {
-  score.render(this);
-};
-
 SubitoRenderer.prototype.extendCanvas = function(canvas) {
   canvas.renderGlyph = function(name, x, y) {
     var font = SubitoRender.Fonts[SubitoRender.ActiveFont];
@@ -41,15 +37,6 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
           'y': null
         }
     };
-
-
-    if(Subito.Settings.debug) {
-      this.fillStyle = "#FF0000";
-      this.beginPath();
-      this.arc(x, y, 2, 0, Math.PI*2, true);
-      this.closePath();
-      this.fill();
-    }
 
     this.fillStyle = "#000000";
 
@@ -142,16 +129,3 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
   };
 };
 
-SubitoRenderer.prototype.settings = {
-  renderTitle: false,
-  font: 'Gonville',
-  margin: 20.5,
-  zoom: 1.0,
-  measure: {
-    
-  },
-  
-  stave: {
-    linespace: 7
-  }
-};

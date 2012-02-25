@@ -1,4 +1,4 @@
-Subito.Parser.MusicJSON = (function() {
+Subito.Parsers.MusicJSON = (function() {
   function constructor(source) {
     this.source = JSON.parse(source);
   }
