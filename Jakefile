@@ -69,8 +69,8 @@ function collect(filepath, files, ignore) {
 }
 
 // Default task - build
-desc('Default task is an alias for \'build\'');
-task({'default': ['build']}, function(parameters) {
+desc('Default both lints and builds the project');
+task({'default': ['lint', 'build']}, function(parameters) {
   // Nothing to do here...
 });
 

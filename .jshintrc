@@ -2,11 +2,11 @@
   "maxlen":   80,
   "browser":  true,
   "devel":    true,
-  
+  "curly":    true,
   "es5":      true,
-
   "newcap":   true,
   "noempty":  true,
+  "nonew":    true,
   "onevar":   false,
   "plusplus": false,
   "trailing": true

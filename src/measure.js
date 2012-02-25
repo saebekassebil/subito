@@ -45,7 +45,9 @@ SubitoMeasure.prototype.getBoundingBox = function(parent) {
     //@TODO add vertical support
   }
   
-  if(bbox.right.x < 100) bbox.right.x = 100; // Minimum measure width
+  if(bbox.right.x < 100) {
+    bbox.right.x = 100; // Minimum measure width
+  }
   
   this.cachedBBox = bbox;
   return bbox;

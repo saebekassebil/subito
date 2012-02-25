@@ -27,7 +27,10 @@ Subito.Parser.MusicJSON = (function() {
   
   constructor.prototype = {
     parseScore: function() {
-      if(!this.source) return false;
+      if(!this.source) {
+        return false;
+      }
+
       var source = this.source;
       var score = source['score-partwise'];
       var part = score.part;
