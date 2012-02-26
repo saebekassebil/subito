@@ -12,6 +12,15 @@ function Subito(canvas) {
   }
 }
 
+Subito.prototype.render = function() {
+  if(this.score) {
+    this.score.render();
+    return true;
+  }
+  
+  return false;
+}
+
 Subito.prototype.parse = function(source, type) {
   if(!source || !type) {
     return false;
@@ -19,8 +28,8 @@ Subito.prototype.parse = function(source, type) {
 
   type = Subito.ParserLanguages[type.toLowerCase()];
 
-  if(typeof Subito.Parser[type] === 'function') {
-    var parser = new Subito.Parser[type](source);
+  if(typeof Subito.Parsers[type] === 'function') {
+    var parser = new Subito.Parsers[type](source);
     try {
       this.score = parser.parseScore();
     } catch(e) {

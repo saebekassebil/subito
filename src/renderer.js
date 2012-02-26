@@ -10,6 +10,14 @@ function SubitoRenderer(canvas, settings) {
     var msg = "Invalid canvas. Must be either <canvas> or <svg> element";
     throw new Subito.Exception(msg);
   }
+
+  this.canvas = canvas;
+  this.settings = {};
+  for(var i in SubitoRenderer.DefaultSettings) {
+    if(SubitoRenderer.DefaultSettings.hasOwnProperty(i)) {
+      this.settings = settings[i] || SubitoRenderer.DefaultSettings[i]; 
+    }
+  }
 }
 
 SubitoRenderer.prototype.extendCanvas = function(canvas) {
@@ -38,7 +46,7 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         }
     };
 
-    this.fillStyle = "#000000";
+    this.fillStyle = this.settings.fillcolor;
 
     this.beginPath();
     for(var i = 0, length = path.length; i < length; i++) {
@@ -120,12 +128,20 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
       }
     }
 
-    this.strokeStyle = "#000000";
+    this.strokeStyle = this.settings.strokecolor;
     this.stroke();
   };
   
-  canvas.getWidth = function() {
-    return parseFloat(this.getAttribute('width'));
+  canvas.getMetrics = function() {
+    return {
+      width: this.getAttribute('width'),
+      height: this.getAttribute('height')
+    };
   };
+};
+
+SubitoRenderer.DefaultSettings = {
+  'strokecolor': '#000000',
+  'fillcolor': '#000000'
 };
 
