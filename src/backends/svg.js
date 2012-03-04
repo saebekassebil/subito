@@ -131,13 +131,12 @@ var SubitoSVGContext = (function() {
 
       var scale = this.renderer.settings.scale;
       glyph = new SubitoGlyph(glyph);
-      glyph.move(x*(1/font.scale.x), y*(1/font.scale.y));
-      glyph.scale(scale);
+      glyph.scale(font.scale.x, font.scale.y); // scale to font scale
+      glyph.move(x, y); // move in place
+      glyph.scale(scale); // scale to rendering scale
 
       var path = create('path');
       path.setAttribute('d', glyph.path);
-      path.setAttribute('transform',
-          'scale(' + font.scale.x + ', ' + font.scale.y + ') ');
       this.context.appendChild(path);
     },
     

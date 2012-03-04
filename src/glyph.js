@@ -5,11 +5,49 @@ function SubitoGlyph(glyph) {
   this.position = {x: 0, y: 0};
 }
 
-SubitoGlyph.prototype.scale = function(scale) {
-  var num;
-  for(var i = 0, length = this.bits.length; i < length; i++) {
-    if(!isNaN(num = parseFloat(this.bits[i]))) {
-      this.bits[i] = num * scale;
+SubitoGlyph.prototype.scale = function(scalex, scaley) {
+  scaley = scaley || scalex;
+  var bits = this.bits;
+  for(var i = 0, length = bits.length; i < length; i++) {
+    var bit = bits[i];
+    if(bit === 'H' || bit === 'h') {
+      var mx = parseFloat(bits[i+1]) * scalex;
+
+      bits[++i] = mx;
+    } else if(bit === 'V' || bit === 'v') {
+      var my = parseFloat(bits[i+1]) * scaley;
+
+      bits[++i] = my;
+    } else if(bit === 'M' || bit === 'L' || bit === 'm' || bit === 'l') {
+      var mx = parseFloat(bits[i+1]) * scalex;
+      var my = parseFloat(bits[i+2]) * scaley;
+
+      bits[++i] = mx;
+      bits[++i] = my;
+    } else if(bit === 'C' || bit === 'c') {
+      var x1 = parseFloat(bits[i+1]) * scalex;
+      var y1 = parseFloat(bits[i+2]) * scaley;
+      var x2 = parseFloat(bits[i+3]) * scalex;
+      var y2 = parseFloat(bits[i+4]) * scaley;
+      var x = parseFloat(bits[i+5]) * scalex;
+      var y = parseFloat(bits[i+6]) * scaley;
+
+      bits[++i] = x1;
+      bits[++i] = y1;
+      bits[++i] = x2;
+      bits[++i] = y2;
+      bits[++i] = x;
+      bits[++i] = y;
+    } else if(bit === 'S' | bit === 's') {
+      var x2 = parseFloat(bits[i+1]) * scalex;
+      var y2 = parseFloat(bits[i+2]) * scaley;
+      var x = parseFloat(bits[i+3]) * scalex;
+      var y = parseFloat(bits[i+4]) * scaley;
+
+      bits[++i] = x2;
+      bits[++i] = y2;
+      bits[++i] = x;
+      bits[++i] = y;
     }
   }
 
