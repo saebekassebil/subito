@@ -1,48 +1,166 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Subito - Development</title>
-    <script src="../build/subito.js" type="text/javascript"></script>
-    <script type="text/javascript">
-    window.addEventListener('load', function() {
-      subito = new Subito(document.getElementById('subito_canvas')); 
-      
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if(xhr.readyState == 4) {
-          if(xhr.status == 200 || xhr.status == 0) {
-            subito.parse(xhr.responseText, 'musicjson');
-            var start = Date.now();
-            subito.render();
-            var end = Date.now();
-            console.log("Rendered in: " + (end-start) + "ms");
-          }
-        }
-      }
-      
-      xhr.open('GET', 'helloworld.json', true);
-      xhr.send(null);
-    }, false);
+    <title>Subito Testing Playground</title>
+
+    <script src="../src/teoria.js"></script>
+    <script src="../src/subito.js"></script>
+    <script src="../src/score.js"></script>
+    <script src="../src/system.js"></script>
+    <script src="../src/stave.js"></script>
+    <script src="../src/measure.js"></script>
+    <script src="../src/note.js"></script>
+    <script src="../src/clef.js"></script>
+    <script src="../src/beam.js"></script>
+    <script src="../src/voice.js"></script>
+    <script src="../src/element.js"></script>
+    <script src="../src/key.js"></script>
+    <script src="../src/formatter.js"></script>
+    <script src="../src/glyph.js"></script>
+    <script src="../src/renderer.js"></script>
+    <script src="../src/fonts/gonville.js"></script>
+    <script src="../src/backends/svg.js"></script>
+    
+    <script>
+      // Testcode here.
+      window.addEventListener('load', function() {
+        var svg = document.getElementById('testsvg')
+        var canvas = document.getElementById('testcanvas');
+
+        var subitosvg = new Subito(svg);
+
+        var score = new SubitoScore();
+        var system = new SubitoSystem();
+        var stave = new SubitoStave();
+        var key = new SubitoKey('dmajor');
+        var measure = new SubitoMeasure();
+        var measure2 = new SubitoMeasure();
+        var voice = new SubitoVoice();
+        var clef = new SubitoClef('g');
+        var note = new SubitoNote('c4', 4);
+        var note2 = new SubitoNote('e4', 4);
+        var note3 = new SubitoNote('g4', 8);
+        var note4 = new SubitoNote('h4', 8);
+        var note5 = new SubitoNote('h4', 4);
+
+        var mnote1 = new SubitoNote('e5', 4);
+        var mnote2 = new SubitoNote('f5', 4);
+        var mnote3 = new SubitoNote('g5', 4);
+        var mnote4 = new SubitoNote('a5', 4);
+
+        var beam = new SubitoBeam([note3, note4]);
+        voice.addNote(note);
+        voice.addNote(note2);
+        voice.addNote(note3);
+        voice.addNote(note4);
+        voice.addNote(note5);
+
+        voice.addNote(mnote1);
+        voice.addNote(mnote2);
+        voice.addNote(mnote3);
+        voice.addNote(mnote4);
+        measure.addContext(note);
+        measure.addContext(note2);
+        measure.addContext(note3);
+        measure.addContext(note4);
+        measure.addContext(note5);
+
+        measure2.addContext(mnote1);
+        measure2.addContext(mnote2);
+        measure2.addContext(mnote3);
+        measure2.addContext(mnote4);
+        measure2.setBarline('final');
+
+        stave.setKey(key);
+        stave.addContext(measure);
+        stave.addContext(measure2);
+        stave.setClef(clef);
+        system.addContext(stave);
+        score.addContext(system);
+        subitosvg.setScore(score);
+
+        var renderer = new SubitoRenderer(svg);
+        renderer.renderScore(score);
+
+        // Canvas
+        var subitocanvas = new Subito(canvas);
+
+        var score = new SubitoScore();
+        var system = new SubitoSystem();
+        var stave = new SubitoStave();
+        var key = new SubitoKey('dmajor');
+        var measure = new SubitoMeasure();
+        var measure2 = new SubitoMeasure();
+        var clef = new SubitoClef('g');
+        var note = new SubitoNote('c4', 4);
+        var note2 = new SubitoNote('e4', 4);
+        var note3 = new SubitoNote('g4', 8);
+        var note4 = new SubitoNote('h4', 8);
+        var note5 = new SubitoNote('h4', 4);
+
+        var mnote1 = new SubitoNote('e5', 4);
+        var mnote2 = new SubitoNote('f5', 4);
+        var mnote3 = new SubitoNote('g5', 4);
+        var mnote4 = new SubitoNote('a5', 4);
+
+        var beam = new SubitoBeam([note3, note4]);
+        measure.addContext(note);
+        measure.addContext(note2);
+        measure.addContext(note3);
+        measure.addContext(note4);
+        measure.addContext(note5);
+
+        measure2.addContext(mnote1);
+        measure2.addContext(mnote2);
+        measure2.addContext(mnote3);
+        measure2.addContext(mnote4);
+        measure2.setBarline('final');
+
+        stave.setKey(key);
+        stave.addContext(measure);
+        stave.addContext(measure2);
+        stave.setClef(clef);
+        system.addContext(stave);
+        score.addContext(system);
+        subitocanvas.setScore(score);
+
+        var renderer = new SubitoRenderer(canvas);
+        renderer.renderScore(score);
+      }, false);
     </script>
-    <style type="text/css">
-        * {
-          margin: 0pt;
-          padding: 0pt;
-        }
-        
-        #wrapper {
-          margin: 20px;
-        }
-        
-        #subito_canvas {
-          border: 1px dashed #000000;
-        }
+
+    <style>
+      * {
+        margin: 0pt;
+        padding: 0pt;
+      }
+
+      body {
+        font: 12px serif;
+        color: #000000;
+      }
+
+      #wrapper {
+        margin: 2em;
+      }
+
+      #testsvg {
+        border: 1px dashed #000000;
+        padding: 2.5em;
+      }
+
+      #testcanvas {
+        margin-top: 20px;
+        border: 1px dashed #000000;
+        padding: 2.5em;
+      }
     </style>
   </head>
   <body>
     <div id="wrapper">
-      <svg id="subito_canvas" class="subito" height="500px" width="800px">
-      </svg>
+      <svg id="testsvg" height="150" width="800"></svg>
+      <canvas id="testcanvas" height="150" width="800"></canvas>
     </div>
   </body>
-</html> 
+</html>
+
