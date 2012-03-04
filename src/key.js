@@ -8,11 +8,35 @@ function SubitoKey(key) {
 }
 
 SubitoKey.prototype.render = function(renderer, x, y) {
+  var head, abs = Math.abs(this.key), posy, hoz, accidentals;
   if(this.key < 0) { // Flats
-
+    head = 'accidentals.flat';
+    accidentals = SubitoKey.Fifths.flat;
   } else {
-    renderer.context.renderGlyph('accidentals.sharp', x, y);
+    head = 'accidentals.sharp';
+    accidentals = SubitoKey.Fifths.sharp;
   }
+
+  hoz = renderer.font.glyphs[head].hoz * renderer.font.scale.x;
+
+  for(var i = 0; i < abs; i++) {
+    posy = accidentals[i]*(renderer.settings.measure.linespan/2);
+    renderer.context.renderGlyph(head, x, y + posy);
+    x += hoz;
+  }
+};
+
+SubitoKey.prototype.getMetrics = function(renderer) {
+  if(this.cachedMetrics) {
+    return this.cachedMetrics;
+  }
+
+  var metric = {
+    width: renderer.font.glyphs['accidentals.sharp'].hoz *
+      renderer.font.scale.x * Math.abs(this.key)
+  };
+
+  return (this.cachedMetric = metric);
 };
 
 SubitoKey.Keys = {

@@ -23,10 +23,10 @@ SubitoSystem.prototype.render = function(ctx) {
   }
 };
 
-SubitoSystem.prototype.getMetrics = function() {
+SubitoSystem.prototype.getMetrics = function(renderer) {
   var highest = this.g.pen.y || 0;
   for(var i = 0, length = this.contexts.length; i < length; i++) {
-    highest = this.contexts[i].getMetrics().highest;
+    highest = this.contexts[i].getMetrics(renderer).highest;
   }
 
   var metrics = {

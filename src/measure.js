@@ -20,11 +20,11 @@ SubitoMeasure.prototype.addContext = function(context) {
   }
 };
 
-SubitoMeasure.prototype.getMetrics = function() {
-  if(this.cachedMetrics) {
+SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
+  if(this.cachedMetrics && !nocache) {
     return this.cachedMetrics;
   } else {
-    var defaults = SubitoRenderer.DefaultSettings;
+    var defaults = renderer.settings
     var g = this.graphical || {};
     var width = g.width || defaults.measure.width;
     var height = g.height || defaults.measure.linespan * 4;
@@ -34,9 +34,21 @@ SubitoMeasure.prototype.getMetrics = function() {
       if(this.contexts[i] instanceof SubitoNote) {
         var metric = this.contexts[i].getMetrics();
         highest = Math.min(highest, metric.position *
-            SubitoRenderer.DefaultSettings.measure.linespan -
-            SubitoRenderer.DefaultSettings.measure.linespan);
+            renderer.settings.measure.linespan -
+            renderer.settings.measure.linespan);
       }
+    }
+
+    if(renderer.flags && renderer.flags.renderKey) {
+      var key = this.getKey();
+      width += key.getMetrics(renderer).width;
+      width += 20; // Some nice space
+    }
+
+    if(renderer.flags && renderer.flags.renderClef) {
+      var clef = this.getClef();
+      width += clef.getMetrics(renderer).width;
+
     }
 
     var metrics = {
@@ -110,6 +122,8 @@ SubitoMeasure.prototype.render = function(renderer) {
     var key = this.getKey();
 
     key.render(renderer, xshift, yshift);
+    xshift += key.getMetrics(renderer).width;
+    xshift += 10; // Some nice space
   }
 
   // Draw time signature

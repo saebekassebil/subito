@@ -24,10 +24,10 @@ SubitoStave.prototype.addContext = function(context) {
 SubitoStave.prototype.render = function(renderer) {
   var ctx = renderer.context;
   var canvasmetrics = ctx.getMetrics();
-  var stavemetrics = this.getMetrics();
+  var stavemetrics = this.getMetrics(renderer);
   var stavewidth = 0, context, metric;
 
-  this.g.pen.y = this.system.getMetrics().y;
+  this.g.pen.y = this.system.getMetrics(renderer).y;
 
   for(var i = 0, length = this.contexts.length; i < length; i++) {
     context = this.contexts[i];
@@ -40,7 +40,7 @@ SubitoStave.prototype.render = function(renderer) {
         renderer.flags.renderKey = false;
       }
 
-      metric = context.getMetrics();
+      metric = context.getMetrics(renderer, true);
       if((stavewidth + metric.width) < canvasmetrics.width) {
         context.render(renderer);
       }
@@ -79,7 +79,7 @@ SubitoStave.prototype.getClef = function() {
   return this.clef;
 };
 
-SubitoStave.prototype.getMetrics = function() {
+SubitoStave.prototype.getMetrics = function(renderer) {
   if(this.cachedMetrics) {
     return this.cachedMetrics;
   } else {
@@ -93,7 +93,7 @@ SubitoStave.prototype.getMetrics = function() {
       for(var i = 0, length = this.contexts.length; i < length; i++) {
         context = this.contexts[i];
         if(context instanceof SubitoMeasure) {
-          contextMetric = context.getMetrics();
+          contextMetric = context.getMetrics(renderer);
           width += contextMetric.width;
           height = Math.min(contextMetric.highest, height);
         }
