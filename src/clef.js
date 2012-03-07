@@ -5,6 +5,7 @@ function SubitoClef(name) {
   }
   var clef = SubitoClef.Clefs[name];
 
+  this.name = name;
   this.line = clef.line;
   this.glyph = clef.glyph;
   this.c4 = clef.c4;

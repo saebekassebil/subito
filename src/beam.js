@@ -33,6 +33,9 @@ SubitoBeam.prototype.render = function(renderer) {
     first.y -= renderer.settings.note.stem;
     last.x += headwidth;
     last.y -= renderer.settings.note.stem;
+  } else {
+    first.y += renderer.settings.note.stem - 4;
+    last.y += renderer.settings.note.stem - 4;
   }
 
   // (Naive) Awesome beaming algorithm

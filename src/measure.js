@@ -28,7 +28,7 @@ SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
     var g = this.graphical || {};
     var width = g.width || defaults.measure.width;
     var height = g.height || defaults.measure.linespan * 4;
-    var highest = 0;
+    var highest = 0, rwidth;
 
     for(var i = 0, length = this.contexts.length; i < length; i++) {
       if(this.contexts[i] instanceof SubitoNote) {
@@ -39,21 +39,23 @@ SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
       }
     }
 
+    rwidth = width;
+    if(renderer.flags && renderer.flags.renderClef) {
+      var clef = this.getClef();
+      width += 3; // Prespacing
+      width += clef.getMetrics(renderer).width;
+    }
+
     if(renderer.flags && renderer.flags.renderKey) {
       var key = this.getKey();
       width += key.getMetrics(renderer).width;
       width += 20; // Some nice space
     }
 
-    if(renderer.flags && renderer.flags.renderClef) {
-      var clef = this.getClef();
-      width += clef.getMetrics(renderer).width;
-
-    }
-
     var metrics = {
       height: height,
       width: width,
+      rwidth: rwidth, // Without clef and key
       highest: highest
     };
 
@@ -108,6 +110,7 @@ SubitoMeasure.prototype.render = function(renderer) {
 
   // Draw clef
   if(flags.renderClef || this.clef) {
+    xshift += 3; // Prespacing
     var clef = this.getClef();
     var clefY = renderer.settings.measure.linespan * clef.line;
     clef.render(renderer, xshift, yshift + clefY);
@@ -138,7 +141,7 @@ SubitoMeasure.prototype.render = function(renderer) {
     context = this.contexts[i];
     if(context instanceof SubitoNote) {
       context.render(renderer);
-      shift = metric.width/context.tnote.duration;
+      shift = metric.rwidth/context.tnote.duration;
       this.g.pen.x += shift;
     }
   }
@@ -152,7 +155,15 @@ SubitoMeasure.prototype.getKey = function() {
   } else {
     return null;
   }
-}
+};
+
+SubitoMeasure.prototype.setClef = function(clef) {
+  if(!(clef instanceof SubitoClef)) {
+    throw new Subito.Eception('InvalidClef', 'An invalid clef was passed');
+  }
+
+  this.clef = clef;
+};
 
 SubitoMeasure.prototype.getClef = function() {
   if(this.clef instanceof SubitoClef) {

@@ -5,10 +5,11 @@ function SubitoKey(key) {
 
   this.name = key;
   this.key = SubitoKey.Keys[key];
+  this.parent = null;
 }
 
 SubitoKey.prototype.render = function(renderer, x, y) {
-  var head, abs = Math.abs(this.key), posy, hoz, accidentals;
+  var head, abs = Math.abs(this.key), posy, hoz, accidentals, clef;
   if(this.key < 0) { // Flats
     head = 'accidentals.flat';
     accidentals = SubitoKey.Fifths.flat;
@@ -17,10 +18,16 @@ SubitoKey.prototype.render = function(renderer, x, y) {
     accidentals = SubitoKey.Fifths.sharp;
   }
 
+  clef = this.parent.getClef();
+
   hoz = renderer.font.glyphs[head].hoz * renderer.font.scale.x;
 
   for(var i = 0; i < abs; i++) {
     posy = accidentals[i]*(renderer.settings.measure.linespan/2);
+    if(clef.name == 'f') {
+      posy += renderer.settings.measure.linespan;
+    }
+
     renderer.context.renderGlyph(head, x, y + posy);
     x += hoz;
   }
@@ -37,6 +44,15 @@ SubitoKey.prototype.getMetrics = function(renderer) {
   };
 
   return (this.cachedMetric = metric);
+};
+
+SubitoKey.prototype.setParent = function(parent) {
+  if(!(parent instanceof SubitoMeasure) && !(parent instanceof SubitoStave)) {
+    throw new Subito.Exception('InvalidParent', 'Can\'t assign SubitoKey ' +
+        'to this element');
+  }
+
+  this.parent = parent;
 };
 
 SubitoKey.Keys = {

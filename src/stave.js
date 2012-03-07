@@ -34,7 +34,9 @@ SubitoStave.prototype.render = function(renderer) {
     if(context instanceof SubitoMeasure) {
       if(i === 0) {
         renderer.flags.renderClef = true;
-        renderer.flags.renderKey = true;
+        if(this.key) {
+          renderer.flags.renderKey = true;
+        }
       } else if(i === 1) {
         renderer.flags.renderClef = false;
         renderer.flags.renderKey = false;
@@ -48,6 +50,15 @@ SubitoStave.prototype.render = function(renderer) {
       this.g.pen.x += metric.width;
     }
   }
+};
+
+SubitoStave.prototype.getClef = function() {
+  if(!(this.clef instanceof SubitoClef)) {
+    throw new Subito.Exception('StaveGotNoClef', 'No clef has been assigned ' +
+        'to this stave');
+  }
+
+  return this.clef;
 };
 
 SubitoStave.prototype.setClef = function(clef) {
@@ -68,15 +79,7 @@ SubitoStave.prototype.getKey = function() {
 
 SubitoStave.prototype.setKey = function(key) {
   this.key = key;
-};
-
-SubitoStave.prototype.getClef = function() {
-  if(!(this.clef instanceof SubitoClef)) {
-    throw new Subito.Exception('StaveGotNoClef', 'No clef has been assigned ' +
-        'to this stave');
-  }
-
-  return this.clef;
+  this.key.setParent(this);
 };
 
 SubitoStave.prototype.getMetrics = function(renderer) {

@@ -71,7 +71,7 @@ SubitoNote.prototype.render = function(renderer) {
       ctx.closePath();
       ctx.stroke();
     } else {
-      stemx = this.measure.g.pen.x + 0.5;
+      stemx = this.measure.g.pen.x;
       ctx.beginPath();
       ctx.moveTo(stemx, yshift + y);
       ctx.lineTo(stemx, yshift + y+stemlength);
@@ -90,7 +90,7 @@ SubitoNote.prototype.render = function(renderer) {
       flagx += font.glyphs[head].hoz * font.scale.x;
       flagy = flagy + (y - stemlength);
     } else {
-      flagx += 1;
+      flagx += 0.5;
       flagy = flagy + (y + stemlength);
     }
 

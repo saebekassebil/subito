@@ -35,18 +35,19 @@
         var key = new SubitoKey('esmajor');
         var measure = new SubitoMeasure();
         var measure2 = new SubitoMeasure();
+        measure2.setClef(new SubitoClef('f'));
         var voice = new SubitoVoice();
         var clef = new SubitoClef('g');
         var note = new SubitoNote('c4', 4);
         var note2 = new SubitoNote('e4', 4);
-        var note3 = new SubitoNote('g4', 8);
-        var note4 = new SubitoNote('h4', 8);
+        var note3 = new SubitoNote('b4', 8);
+        var note4 = new SubitoNote('c5', 8);
         var note5 = new SubitoNote('h4', 4);
 
-        var mnote1 = new SubitoNote('e5', 4);
-        var mnote2 = new SubitoNote('f5', 4);
-        var mnote3 = new SubitoNote('g5', 4);
-        var mnote4 = new SubitoNote('a5', 4);
+        var mnote1 = new SubitoNote('e3', 4);
+        var mnote2 = new SubitoNote('f3', 4);
+        var mnote3 = new SubitoNote('g3', 4);
+        var mnote4 = new SubitoNote('a3', 4);
 
         var beam = new SubitoBeam([note3, note4]);
         voice.addNote(note);
