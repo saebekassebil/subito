@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Teoria - Subito</title>
+    <script src="../build/subito.js"></script>
+    <script>
+      function purgeCanvas() {
+        var kCanvas = document.getElementById('canvas');
+        while(kCanvas.firstChild) {
+          kCanvas.removeChild(kCanvas.firstChild);
+        }
+      }
+
+      function error(msg, timeout) {
+        var kError = document.getElementById('errormessage');
+        kError.textContent = msg;
+
+        kError.style.display = 'inline';
+        window.setInterval(function() {
+          kError.style.display = 'none';
+        }, timeout || 1000);
+      }
+
+      function renderScale(note, scale) {
+        purgeCanvas();
+
+        var last = note.interval('P8');
+        scale = teoria.scale(note, scale);
+        scale.notes.push(last);
+
+        // Initialize Subito
+        var subito = new Subito();
+        var score = new SubitoScore();
+        var system = new SubitoSystem();
+        var stave = new SubitoStave();
+        var clef = new SubitoClef('g');
+        var renderer = new SubitoRenderer(document.getElementById('canvas'));
+        var measure = new SubitoMeasure();
+        measure.g.width = renderer.context.getMetrics().width /
+          renderer.settings.scale - 50;
+
+        stave.setClef(clef);
+        system.addContext(stave);
+        score.addContext(system);
+
+        var notes = [];
+        for(var i = 0, length = scale.notes.length; i < length; i++) {
+          var note = new SubitoNote(scale.notes[i].scientific(), 4); 
+          measure.addContext(note);
+        }
+
+        measure.setBarline('final');
+        stave.addContext(measure);
+
+        renderer.renderScore(score);
+      }
+
+      window.addEventListener('load', function() {
+        var kScaleRoot = document.getElementById('scaleroot');
+        var kScaleSelect = document.getElementById('scale');
+
+        // Populate the select
+        for(var i in teoria.scale.scales) {
+          var name = i.substr(0, 1).toUpperCase() + i.substr(1);
+          var option = document.createElement('option');
+          option.value = i;
+          option.textContent = name;
+
+          kScaleSelect.appendChild(option);
+        }
+
+        // Add listener for change in input field
+        kScaleRoot.addEventListener('keyup', function(e) {
+          if(this.value.trim().length == 0) {
+            return;
+          }
+
+          try {
+            var note = teoria.note(this.value.trim());
+          } catch(e) {
+            return error(e.message, 5000);
+          }
+          var scale = kScaleSelect.options[kScaleSelect.selectedIndex].value;
+
+          renderScale(note, scale);
+        }, false);
+
+        kScaleSelect.addEventListener('change', function(e) {
+          if(this.value.trim().length == 0) {
+            return;
+          }
+
+          try {
+            var note = teoria.note(kScaleRoot.value.trim());
+          } catch(e) {
+            return error(e.message, 5000);
+          }
+          var scale = this.options[this.selectedIndex].value;
+
+          renderScale(note, scale);
+        }, false);
+
+        var note = teoria.note(kScaleRoot.value.trim());
+        var scale = 'major';
+        renderScale(note, scale);
+      }, false);
+    </script>
+    <style type="text/css">
+      * {
+        margin: 0pt;
+        padding: 0pt;
+      }
+
+      body {
+        font-family: 'Georgia';
+        font-size: 14pt;
+      }
+
+      #wrapper {
+        margin: 2em auto;
+        width: 1000px;
+      }
+
+      #canvas {
+        padding: 20px;
+        margin-left: 50px;
+      }
+
+      h1, h2, h3 {
+        font-weight: normal;
+      }
+
+      h1 {
+        margin-bottom: 1em;
+        border-bottom: 2px solid #000;
+      }
+
+      input[type='text'] {
+        padding: 1em;
+        border: 1px solid #EEE;
+        font-size: 14pt;
+      }
+
+      select {
+        border: 1px solid #EEE;
+        font-size: 14pt;
+        padding: 1em;
+      }
+
+      input:hover {
+        border: 1px solid #CCC;
+      }
+
+      select:hover {
+        border: 1px solid #ccc;
+        cursor: pointer;
+      }
+
+      #errormessage {
+        color: #D8000C;
+        margin-left: 1em;
+        background-color: #FFBABA;
+        border: 1px solid;
+        padding: 1em;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <h1>Teoria & Subito - Scales</h1>
+      <svg id="canvas" height="100" width="900"></svg>
+
+      <form id="scaleinput">
+        <p>Type a note name, and choose a scale:</p>
+        <input type="text" id="scaleroot" value="c4" size="4"/>
+        <select id="scale">
+          <!-- Populated by JavaScript --!>
+        </select>
+        <span id="errormessage"></span>
+      </form>
+    </div>
+  </body>
+</html>
