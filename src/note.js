@@ -30,16 +30,16 @@ SubitoNote.prototype.render = function(renderer) {
 
   // Render Accidentals if any
   var accidental = this.tnote.accidental;
-  if(accidental.value != 0) {
+  if(accidental.value !== 0) {
     this.g.x += 5;
     var accidentalHead;
-    if(accidental.value == 1) {
+    if(accidental.value === 1) {
       accidentalHead = 'accidentals.sharp';
-    } else if(accidental.value == 2) {
+    } else if(accidental.value === 2) {
       accidentalHead = 'accidentals.doublesharp';
-    } else if(accidental.value == -1) {
+    } else if(accidental.value === -1) {
       accidentalHead = 'accidentals.flat';
-    } else if(accidental.value == -2) {
+    } else if(accidental.value === -2) {
       accidentalHead = 'accidentals.flatflat';
     }
 
@@ -103,7 +103,7 @@ SubitoNote.prototype.render = function(renderer) {
   }
 
   // Render flag if any
-  if(this.tnote.duration >=8 && this.beams.length == 0) {
+  if(this.tnote.duration >= 8 && this.beams.length === 0) {
     var flag = this.getFlagGlyphName();
     var flagx = this.g.x;
     var flagy = yshift;

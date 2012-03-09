@@ -26,8 +26,8 @@ SubitoBeam.prototype.render = function(renderer) {
   };
 
   if(this.getStem() == 'up') {
-    var headwidth = renderer.font.glyphs[this.notes[0].getHeadGlyphName()].hoz * 
-      renderer.font.scale.x;
+    var head = this.notes[0].getHeadGlyphName();
+    var headwidth = renderer.font.glyphs[head].hoz * renderer.font.scale.x;
 
     first.x += headwidth-1; // 1 = stemwidth
     first.y -= renderer.settings.note.stem;

@@ -7,30 +7,30 @@ function SubitoGlyph(glyph) {
 
 SubitoGlyph.prototype.scale = function(scalex, scaley) {
   scaley = scaley || scalex;
-  var bits = this.bits;
+  var bits = this.bits, x, y, x1, x2, y1, y2;
   for(var i = 0, length = bits.length; i < length; i++) {
     var bit = bits[i];
     if(bit === 'H' || bit === 'h') {
-      var mx = parseFloat(bits[i+1]) * scalex;
+      x = parseFloat(bits[i+1]) * scalex;
 
-      bits[++i] = mx;
+      bits[++i] = x;
     } else if(bit === 'V' || bit === 'v') {
-      var my = parseFloat(bits[i+1]) * scaley;
+      y = parseFloat(bits[i+1]) * scaley;
 
-      bits[++i] = my;
+      bits[++i] = y;
     } else if(bit === 'M' || bit === 'L' || bit === 'm' || bit === 'l') {
-      var mx = parseFloat(bits[i+1]) * scalex;
-      var my = parseFloat(bits[i+2]) * scaley;
+      x = parseFloat(bits[i+1]) * scalex;
+      y = parseFloat(bits[i+2]) * scaley;
 
-      bits[++i] = mx;
-      bits[++i] = my;
+      bits[++i] = x;
+      bits[++i] = y;
     } else if(bit === 'C' || bit === 'c') {
-      var x1 = parseFloat(bits[i+1]) * scalex;
-      var y1 = parseFloat(bits[i+2]) * scaley;
-      var x2 = parseFloat(bits[i+3]) * scalex;
-      var y2 = parseFloat(bits[i+4]) * scaley;
-      var x = parseFloat(bits[i+5]) * scalex;
-      var y = parseFloat(bits[i+6]) * scaley;
+      x1 = parseFloat(bits[i+1]) * scalex;
+      y1 = parseFloat(bits[i+2]) * scaley;
+      x2 = parseFloat(bits[i+3]) * scalex;
+      y2 = parseFloat(bits[i+4]) * scaley;
+      x = parseFloat(bits[i+5]) * scalex;
+      y = parseFloat(bits[i+6]) * scaley;
 
       bits[++i] = x1;
       bits[++i] = y1;
@@ -39,10 +39,10 @@ SubitoGlyph.prototype.scale = function(scalex, scaley) {
       bits[++i] = x;
       bits[++i] = y;
     } else if(bit === 'S' | bit === 's') {
-      var x2 = parseFloat(bits[i+1]) * scalex;
-      var y2 = parseFloat(bits[i+2]) * scaley;
-      var x = parseFloat(bits[i+3]) * scalex;
-      var y = parseFloat(bits[i+4]) * scaley;
+      x2 = parseFloat(bits[i+1]) * scalex;
+      y2 = parseFloat(bits[i+2]) * scaley;
+      x = parseFloat(bits[i+3]) * scalex;
+      y = parseFloat(bits[i+4]) * scaley;
 
       bits[++i] = x2;
       bits[++i] = y2;
@@ -56,21 +56,21 @@ SubitoGlyph.prototype.scale = function(scalex, scaley) {
 
 SubitoGlyph.prototype.move = function(x, y) {
   this.position = {x: x, y: y};
-  var bits = this.bits;
+  var bits = this.bits, mx, my, x1, x2, y1, y2;
 
   for(var i = 0, length = bits.length; i < length; i++) {
     var bit = bits[i];
     if(bit === 'H') {
-      var mx = parseFloat(bits[i+1]) + x;
+      mx = parseFloat(bits[i+1]) + x;
 
       bits[++i] = mx;
     } else if(bit === 'V') {
-      var my = parseFloat(bits[i+1]) + y;
+      my = parseFloat(bits[i+1]) + y;
 
       bits[++i] = my;
     } else if(bit === 'M' || bit === 'L') {
-      var mx = parseFloat(bits[i+1]);
-      var my = parseFloat(bits[i+2]);
+      mx = parseFloat(bits[i+1]);
+      my = parseFloat(bits[i+2]);
 
       mx = x + mx;
       my = y + my;
@@ -78,29 +78,29 @@ SubitoGlyph.prototype.move = function(x, y) {
       bits[++i] = mx;
       bits[++i] = my;
     } else if(bit === 'C') {
-      var x1 = parseFloat(bits[i+1]) + x;
-      var y1 = parseFloat(bits[i+2]) + y;
-      var x2 = parseFloat(bits[i+3]) + x;
-      var y2 = parseFloat(bits[i+4]) + y;
-      var x = parseFloat(bits[i+5]) + x;
-      var y = parseFloat(bits[i+6]) + y;
+      x1 = parseFloat(bits[i+1]) + x;
+      y1 = parseFloat(bits[i+2]) + y;
+      x2 = parseFloat(bits[i+3]) + x;
+      y2 = parseFloat(bits[i+4]) + y;
+      mx = parseFloat(bits[i+5]) + x;
+      my = parseFloat(bits[i+6]) + y;
 
       bits[++i] = x1;
       bits[++i] = y1;
       bits[++i] = x2;
       bits[++i] = y2;
-      bits[++i] = x;
-      bits[++i] = y;
+      bits[++i] = mx;
+      bits[++i] = my;
     } else if(bit === 'S') {
-      var x2 = parseFloat(bits[i+1]) + x;
-      var y2 = parseFloat(bits[i+2]) + y;
-      var x = parseFloat(bits[i+3]) + x;
-      var y = parseFloat(bits[i+4]) + y;
+      x2 = parseFloat(bits[i+1]) + x;
+      y2 = parseFloat(bits[i+2]) + y;
+      mx = parseFloat(bits[i+3]) + x;
+      my = parseFloat(bits[i+4]) + y;
 
       bits[++i] = x2;
       bits[++i] = y2;
-      bits[++i] = x;
-      bits[++i] = y;
+      bits[++i] = mx;
+      bits[++i] = my;
     }
   }
 

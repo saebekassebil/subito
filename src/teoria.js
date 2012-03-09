@@ -995,7 +995,7 @@ var scope = (typeof exports === 'object') ? exports : window;
   // teoria.scale namespace - Scales are constructed through this function.
   teoria.scale = function(tonic, scale) {
     return new TeoriaScale(tonic, scale);
-  }
+  };
 
   /**
    * A list of scales, used internally in the #list function.

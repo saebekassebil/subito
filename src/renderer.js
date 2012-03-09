@@ -37,7 +37,8 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
       return Subito.log('Unsupported Glyph: ' + name , 'warn');
     }
 
-    var glyph = (name instanceof SubitoGlyph) ? name : new SubitoGlyph(font.glyphs[name]);
+    var glyph = (name instanceof SubitoGlyph) ? name :
+      new SubitoGlyph(font.glyphs[name]);
     //glyph.scale(self.settings.scale);
     ////glyph.move(0.5, 0.5);
     var path = glyph.bits;

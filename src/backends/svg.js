@@ -126,7 +126,8 @@ var SubitoSVGContext = (function() {
       
       var glyph = font.glyphs[glyphName];
       if(!glyph) {
-        throw new Subito.Exception("InvalidGlyph", "Couldn't found glyph: " + glyphName);
+        throw new Subito.Exception("InvalidGlyph",
+            "Couldn't found glyph: " + glyphName);
       }
 
       var scale = this.renderer.settings.scale;

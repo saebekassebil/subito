@@ -29,7 +29,7 @@ SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
   if(this.cachedMetrics && !nocache) {
     return this.cachedMetrics;
   } else {
-    var defaults = renderer.settings
+    var defaults = renderer.settings;
     var g = this.graphical || {};
     var width = g.width || defaults.measure.width;
     var height = g.height || defaults.measure.linespan * 4;
@@ -135,8 +135,8 @@ SubitoMeasure.prototype.render = function(renderer) {
   }
 
   // Draw time signature
-  if(flags.renderTime || this.time) {
-  }
+  /*if(flags.renderTime || this.time) {
+  }*/
 
   // Render notes
   var context, shift;
