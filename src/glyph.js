@@ -1,6 +1,6 @@
 function SubitoGlyph(glyph) {
   this.glyph = glyph;
-  this.path = glyph.path.replace(/(\d|^)?([a-z])(\d|$)?/ig, '$1 $2 $3');
+  this.path = glyph.path.replace(/(\d|^)?([mlhvcsqtaz])(\d|$)?/ig, '$1 $2 $3');
   this.bits = this.path.split(/\s+/);
   this.position = {x: 0, y: 0};
 }

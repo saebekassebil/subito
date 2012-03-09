@@ -15,7 +15,8 @@ var settings = {
   silent: false,
   colors: true,
   font: false,
-  standalone: false
+  standalone: false,
+  noparsers: false
 };
 
 // Log colors if the npm module colors is available
@@ -154,6 +155,9 @@ task('build', function() {
     } else if(!settings.standalone && feedback.filename == 'standalone.js') {
       feedback.discard();
       log('Ignoring standalone helper ' + feedback.filename, 'info', 'grey');
+    } else if(settings.noparsers && feedback.filename.indexOf('parsers/') == 0) {
+      feedback.discard();
+      log('Ignoring parser file ' + feedback.filename, 'info', 'grey');
     }  else {
       log("Concatenating: " + feedback.filename, 'info', 'grey');
     }

@@ -31,7 +31,6 @@ SubitoNote.prototype.render = function(renderer) {
   // Render Accidentals if any
   var accidental = this.tnote.accidental;
   if(accidental.value !== 0) {
-    this.g.x += 5;
     var accidentalHead;
     if(accidental.value === 1) {
       accidentalHead = 'accidentals.sharp';
@@ -46,6 +45,7 @@ SubitoNote.prototype.render = function(renderer) {
     var width = renderer.font.glyphs[accidentalHead].hoz *
       renderer.font.scale.x * 1.5;
 
+    this.g.x += width;
     ctx.renderGlyph(accidentalHead, this.g.x - width, yshift + y);
   }
 
