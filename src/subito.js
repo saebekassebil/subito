@@ -78,8 +78,15 @@ Subito._isArray = function(element) {
 };
 
 //=include standalone.js
+//=include teoria.js
 
 //=include score.js
+//=include system.js
+//=include stave.js
+//=include measure.js
+//=include note.js
+//=include clef.js
+//=include glyph.js
 //=include renderer.js
 //=include backends/svg.js
 //=include fonts/gonville.js

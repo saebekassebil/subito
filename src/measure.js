@@ -1,4 +1,9 @@
 function SubitoMeasure(contexts) {
+  if(contexts && Subito._isArray(contexts)) {
+    for(var i = 0, length = contexts.length; i < length; i++) {
+      contexts[i].setMeasure(this);
+    }
+  }
   this.contexts = contexts || [];
   this.barline = 'single';
 
@@ -141,7 +146,7 @@ SubitoMeasure.prototype.render = function(renderer) {
     context = this.contexts[i];
     if(context instanceof SubitoNote) {
       context.render(renderer);
-      shift = metric.rwidth/context.tnote.duration;
+      shift = metric.rwidth/length; // metric.rwidth/context.tnote.duration
       this.g.pen.x += shift;
     }
   }

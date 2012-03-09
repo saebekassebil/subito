@@ -43,9 +43,9 @@ SubitoStave.prototype.render = function(renderer) {
       }
 
       metric = context.getMetrics(renderer, true);
-      if((stavewidth + metric.width) < canvasmetrics.width) {
+      //if((stavewidth + metric.width) < canvasmetrics.width) {
         context.render(renderer);
-      }
+      //}
 
       this.g.pen.x += metric.width;
     }

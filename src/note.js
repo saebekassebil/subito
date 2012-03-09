@@ -21,20 +21,42 @@ SubitoNote.prototype.render = function(renderer) {
   var yshift = this.measure.g.pen.y;
   var lpos, lx, ly, i, length, stemx, ls, pos, y;
 
-  // Render head
   ls = renderer.settings.measure.linespan;
   pos = Subito.C4 - this.tnote.key(true);
   pos = clef.c4 + pos/2;
   y = ls*pos;
-  ctx.renderGlyph(head, this.measure.g.pen.x, yshift + y);
   this.g.x = this.measure.g.pen.x;
   this.g.y = yshift + y;
+
+  // Render Accidentals if any
+  var accidental = this.tnote.accidental;
+  if(accidental.value != 0) {
+    this.g.x += 5;
+    var accidentalHead;
+    if(accidental.value == 1) {
+      accidentalHead = 'accidentals.sharp';
+    } else if(accidental.value == 2) {
+      accidentalHead = 'accidentals.doublesharp';
+    } else if(accidental.value == -1) {
+      accidentalHead = 'accidentals.flat';
+    } else if(accidental.value == -2) {
+      accidentalHead = 'accidentals.flatflat';
+    }
+
+    var width = renderer.font.glyphs[accidentalHead].hoz *
+      renderer.font.scale.x * 1.5;
+
+    ctx.renderGlyph(accidentalHead, this.g.x - width, yshift + y);
+  }
+
+  // Render head
+  ctx.renderGlyph(head, this.g.x, yshift + y);
 
   // Render ledger lines if any
   if(pos >= 5) {
     lpos = Math.floor(pos);
     for(i = 0, length = lpos - 4; i < length; i++) {
-      lx = this.measure.g.pen.x;
+      lx = this.g.x;
       ly = ls*(5+i) + yshift;
 
       ctx.beginPath();
@@ -46,7 +68,7 @@ SubitoNote.prototype.render = function(renderer) {
   } else if(pos <= -1) {
     lpos = Math.ceil(pos);
     for(i = 0, length = 0 - lpos; i < length; i++) {
-      lx = this.measure.g.pen.x;
+      lx = this.g.x;
       ly = -ls*(i+1) + yshift;
 
       ctx.beginPath();
@@ -62,7 +84,7 @@ SubitoNote.prototype.render = function(renderer) {
   var stemlength = renderer.settings.note.stem;
   if(this.tnote.duration >= 2) {
     if(direction == 'up') {
-      stemx = this.measure.g.pen.x +
+      stemx = this.g.x +
         font.glyphs[head].hoz * font.scale.x - 0.5;
 
       ctx.beginPath();
@@ -71,7 +93,7 @@ SubitoNote.prototype.render = function(renderer) {
       ctx.closePath();
       ctx.stroke();
     } else {
-      stemx = this.measure.g.pen.x;
+      stemx = this.g.x;
       ctx.beginPath();
       ctx.moveTo(stemx, yshift + y);
       ctx.lineTo(stemx, yshift + y+stemlength);
@@ -83,7 +105,7 @@ SubitoNote.prototype.render = function(renderer) {
   // Render flag if any
   if(this.tnote.duration >=8 && this.beams.length == 0) {
     var flag = this.getFlagGlyphName();
-    var flagx = this.measure.g.pen.x;
+    var flagx = this.g.x;
     var flagy = yshift;
 
     if(direction == 'up') {
