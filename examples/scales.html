@@ -27,13 +27,14 @@
         var last = note.interval('P8');
         scale = teoria.scale(note, scale);
         scale.notes.push(last);
+        var clefSign = (note.key(true) > 19) ? 'g' : 'f';
 
         // Initialize Subito
         var subito = new Subito();
         var score = new SubitoScore();
         var system = new SubitoSystem();
         var stave = new SubitoStave();
-        var clef = new SubitoClef('g');
+        var clef = new SubitoClef(clefSign);
         var renderer = new SubitoRenderer(document.getElementById('canvas'));
         var measure = new SubitoMeasure();
         measure.g.width = renderer.context.getMetrics().width /
@@ -58,6 +59,7 @@
       window.addEventListener('load', function() {
         var kScaleRoot = document.getElementById('scaleroot');
         var kScaleSelect = document.getElementById('scale');
+        var kForm = document.getElementById('scaleinput');
 
         // Populate the select
         for(var i in teoria.scale.scales) {
@@ -85,6 +87,7 @@
           renderScale(note, scale);
         }, false);
 
+        // Listen for change in dropdown box
         kScaleSelect.addEventListener('change', function(e) {
           if(this.value.trim().length == 0) {
             return;
@@ -98,6 +101,13 @@
           var scale = this.options[this.selectedIndex].value;
 
           renderScale(note, scale);
+        }, false);
+
+        // Prevent the form from being submitted
+        kForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          return false;
         }, false);
 
         var note = teoria.note(kScaleRoot.value.trim());
