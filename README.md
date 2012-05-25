@@ -1,7 +1,6 @@
 # Subito
 
-*subito /'su.bi.to/*
-Adverb: 1. (*music*) suddenly
+*subito /'su.bi.to/* - (int.) Adverb: 1. (*music*) suddenly
 
 Subito is a JavaScript library for music engraving. It strives to render beautiful
 music scores, while maintaining a good level of performance. Subito is the main project
@@ -20,12 +19,15 @@ You'll need the *Mingler* and *jake* (and optionally *colors*) NPM packages, thi
 shold be easy to install with `npm install` at the project root.
 
 Clone the repository:
+
 `git clone git://github.com/saebekassebil/subito.git`
 
 Fetch the submodule (teoria.js):
+
 `git submodule init && git submodule update`
 
 Build the concatenated (and optionally minified) build file:
+
 `jake` or `jake build[minify]` or `jake build[font]` or `jake build[font,minify]`
 
 *(notice that the [font] option is required for playing with some of the examples)*
