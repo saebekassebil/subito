@@ -8,6 +8,9 @@ var SubitoSVGContext = (function() {
     this.path = '';
 
     this.lineWidth = 1;
+    this.globalAlpha = 1.0;
+    this.strokeStyle = '#000000';
+    this.fillColor = '#000000';
     
     this.state = {
       scale: {x: 1, y: 1}
@@ -66,8 +69,11 @@ var SubitoSVGContext = (function() {
       glyph.scale(this.renderer.settings.scale);
       glyph.move(0.5, 0.5);
       path.setAttribute('d', glyph.path);
-      path.setAttribute('stroke', this.renderer.settings.strokecolor);
+      path.setAttribute('stroke', this.strokeStyle || this.renderer.settings.strokecolor);
       path.setAttribute('stroke-width', this.lineWidth);
+      if (this.globalAlpha !== 1.0) {
+        path.setAttribute('opacity', this.globalAlpha);
+      }
       
       this.context.appendChild(path);
 
@@ -82,7 +88,10 @@ var SubitoSVGContext = (function() {
       glyph.scale(this.renderer.settings.scale);
       glyph.move(0.5, 0.5);
       path.setAttribute('d', glyph.path);
-      path.setAttribute('fill', this.renderer.settings.fillcolor);
+      path.setAttribute('fill', this.fillStyle || this.renderer.settings.fillcolor);
+      if (this.globalAlpha !== 1.0) {
+        path.setAttribute('opacity', this.globalAlpha);
+      }
       
       this.context.appendChild(path);
 
@@ -105,7 +114,10 @@ var SubitoSVGContext = (function() {
         state: Object.create(this.state),
         font: Object.create(this.renderer.font),
         attributes: Object.create(this.attributes || {}),
-        lineWidth: this.lineWidth
+        lineWidth: this.lineWidth,
+        globalAlpha: this.globalAlpha,
+        strokeStyle: this.strokeStyle,
+        fillStyle: this.fillStyle
       });
     },
     
@@ -115,6 +127,9 @@ var SubitoSVGContext = (function() {
       this.attributes = stack.attributes;
       this.state = stack.state;
       this.lineWidth = stack.lineWidth;
+      this.globalAlpha = stack.globalAlpha;
+      this.strokeStyle = stack.strokeStyle;
+      this.fillStyle = stack.fillStyle;
     },
     
     /* Glyph API */

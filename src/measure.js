@@ -45,7 +45,7 @@ SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
     }
 
     rwidth = width;
-    if(renderer.flags && renderer.flags.renderClef) {
+    if(this.clef || renderer.flags && renderer.flags.renderClef) {
       var clef = this.getClef();
       width += 3; // Prespacing
       width += clef.getMetrics(renderer).width;
@@ -63,7 +63,6 @@ SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
       rwidth: rwidth, // Without clef and key
       highest: highest
     };
-
     return (this.cachedMetrics = metrics);
   }
 };
@@ -85,6 +84,7 @@ SubitoMeasure.prototype.render = function(renderer) {
     ctx.closePath();
     ctx.stroke();
   }
+
 
   // Draw barline
   if(this.barline == 'single') {
@@ -136,6 +136,7 @@ SubitoMeasure.prototype.render = function(renderer) {
 
   // Draw time signature
   /*if(flags.renderTime || this.time) {
+   *
   }*/
 
   // Render notes
@@ -146,10 +147,27 @@ SubitoMeasure.prototype.render = function(renderer) {
     context = this.contexts[i];
     if(context instanceof SubitoNote) {
       context.render(renderer);
-      shift = metric.rwidth/length; // metric.rwidth/context.tnote.duration
+      shift = metric.rwidth/context.tnote.duration; // metric.rwidth/context.tnote.duration
       this.g.pen.x += shift;
     }
   }
+
+  // Render BBox
+  /*
+  var bboxx = this.stave.g.pen.x, bboxy = this.stave.g.pen.y;
+  ctx.save();
+  ctx.fillStyle = '#0099FF';
+  ctx.globalAlpha = 0.5;
+
+  ctx.beginPath();
+  ctx.moveTo(bboxx, bboxy + y);
+  ctx.lineTo(bboxx, bboxy);
+  ctx.lineTo(bboxx + metric.width, bboxy);
+  ctx.lineTo(bboxx + metric.width, bboxy + y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+  */
 };
 
 SubitoMeasure.prototype.getKey = function() {

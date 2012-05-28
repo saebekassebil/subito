@@ -10,7 +10,7 @@ function SubitoBeam(notes) {
 }
 
 SubitoBeam.prototype.render = function(renderer) {
-  if(this.notes.length < 2 || !this.ready()) {
+  if (this.notes.length < 2 || !this.ready()) {
     return false;
   }
 
@@ -27,7 +27,7 @@ SubitoBeam.prototype.render = function(renderer) {
     if(Math.abs(slope) > Math.abs(maxslope)) {
       maxslope = slope;
       peak = i+1;
-    } else if ((maxslope > 0 && slope < 0) || maxslope < 0 && slope > 0) {
+    } else if ((maxslope > 0 && slope < 0) || (maxslope < 0 && slope > 0)) {
       maxslope = 0;
       peak = i;
       break;
@@ -38,10 +38,10 @@ SubitoBeam.prototype.render = function(renderer) {
     maxslope = Math.abs(maxslope)/maxslope * renderer.settings.beam.slope;
   }
 
-  for(i = 0, length = length+1; i < length; i++) {
+  for(i = 0, length = length + 1; i < length; i++) {
     notea = notes[i];
     var newy = notes[peak].g.y - (notes[peak].g.x-notea.g.x) * maxslope;
-    notea.g.stemlength = renderer.settings.note.stem - (notea.g.y - newy);
+    notea.g.stemlength = renderer.settings.note.stem + Math.abs((newy - notea.g.y));
 
     // "Artificially" add the extended stemlength - Yikes
     ctx.beginPath();
@@ -61,12 +61,12 @@ SubitoBeam.prototype.render = function(renderer) {
   // Render beam
   var first = notes[0].g, last = notes[length-1].g,
       beamwidth = renderer.settings.beam.width,
-      notesettings = renderer.settings.note;
+      stemwidth = renderer.settings.note.stemwidth;
   if(this.getStem() == 'up') {
     ctx.beginPath();
-    ctx.moveTo(first.x + headwidth - notesettings.stemwidth,
+    ctx.moveTo(first.x + headwidth - stemwidth,
         first.y - (beamwidth - 2) - first.stemlength);
-    ctx.lineTo(first.x + headwidth - notesettings.stemwidth,
+    ctx.lineTo(first.x + headwidth - stemwidth,
         first.y + 2 - first.stemlength);
     ctx.lineTo(last.x + headwidth, last.y + 2 - last.stemlength);
     ctx.lineTo(last.x + headwidth, last.y - (beamwidth - 2) - last.stemlength);
@@ -74,13 +74,13 @@ SubitoBeam.prototype.render = function(renderer) {
     ctx.fill();
   } else {
     ctx.beginPath();
-    ctx.moveTo(first.x - notesettings.stemwidth/2,
+    ctx.moveTo(first.x - stemwidth/2,
         first.y + first.stemlength - (beamwidth - 1));
-    ctx.lineTo(first.x - notesettings.stemwidth/2,
+    ctx.lineTo(first.x - stemwidth/2,
         first.y + first.stemlength + 1);
-    ctx.lineTo(last.x + notesettings.stemwidth/2,
+    ctx.lineTo(last.x + stemwidth/2,
         last.y + last.stemlength + 1);
-    ctx.lineTo(last.x + notesettings.stemwidth/2,
+    ctx.lineTo(last.x + stemwidth/2,
         last.y + last.stemlength - (beamwidth - 1));
     ctx.closePath();
     ctx.fill();
