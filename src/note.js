@@ -79,28 +79,8 @@ SubitoNote.prototype.render = function(renderer) {
     }
   }
 
-  // Render stem if any
   var direction = this.getStem(clef);
-  var stemlength = renderer.settings.note.stem;
-  if(this.tnote.duration >= 2) {
-    if(direction == 'up') {
-      stemx = this.g.x +
-        font.glyphs[head].hoz * font.scale.x - 0.5;
-
-      ctx.beginPath();
-      ctx.moveTo(stemx, yshift + y);
-      ctx.lineTo(stemx, yshift + y-stemlength);
-      ctx.closePath();
-      ctx.stroke();
-    } else {
-      stemx = this.g.x;
-      ctx.beginPath();
-      ctx.moveTo(stemx, yshift + y);
-      ctx.lineTo(stemx, yshift + y+stemlength);
-      ctx.closePath();
-      ctx.stroke();
-    }
-  }
+  var stemlength = this.g.stemlength || renderer.settings.note.stem;
 
   // Render flag if any
   if(this.tnote.duration >= 8 && this.beams.length === 0) {
@@ -122,6 +102,29 @@ SubitoNote.prototype.render = function(renderer) {
       this.beams[i].render(renderer);
     }
   }
+
+  // Render stem if any
+  if(this.tnote.duration >= 2) {
+    if(direction == 'up') {
+      stemx = this.g.x +
+        font.glyphs[head].hoz * font.scale.x - 0.5;
+
+      ctx.beginPath();
+      ctx.moveTo(stemx, yshift + y);
+      ctx.lineTo(stemx, yshift + y-stemlength);
+      ctx.closePath();
+      ctx.stroke();
+    } else {
+      stemx = this.g.x;
+      ctx.beginPath();
+      ctx.moveTo(stemx, yshift + y);
+      ctx.lineTo(stemx, yshift + y+stemlength);
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+
+  this.g.rendered = true;
 };
 
 SubitoNote.prototype.getHeadGlyphName = function() {
@@ -180,7 +183,6 @@ SubitoNote.prototype.getMetrics = function() {
     return this.cachedMetrics;
   }
 
-  a = this.measure;
   var pos = Subito.C4 - this.tnote.key(true);
   pos = this.measure.getClef().c4 + pos/2;
 

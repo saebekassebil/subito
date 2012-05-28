@@ -205,6 +205,11 @@ SubitoRenderer.DefaultSettings = {
     stemwidth: 1
   },
 
+  beam: {
+    slope: 0.22,
+    width: 3
+  },
+
   // Font
   font: 'Gonville',
 
