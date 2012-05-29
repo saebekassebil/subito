@@ -44,12 +44,16 @@
         var note5 = new SubitoNote('c5', 8);
         var note6 = new SubitoNote('d5', 8);
 
-        var mnote1 = new SubitoNote('e#3', 4);
-        var mnote2 = new SubitoNote('f3', 4);
-        var mnote3 = new SubitoNote('g2', 8);
-        var mnote4 = new SubitoNote('a2', 8);
-        var mnote5 = new SubitoNote('b2', 8);
-        var mnote6 = new SubitoNote('f3', 8);
+        var mnote1 = new SubitoNote('e#3', 8);
+        var mnote2 = new SubitoNote('f3', 16);
+        var mnote3 = new SubitoNote('g3', 16);
+        var mnote4 = new SubitoNote('a3', 8);
+        var mnote5 = new SubitoNote('g2', 8);
+        var mnote6 = new SubitoNote('a2', 8);
+        var mnote7 = new SubitoNote('b2', 16);
+        var mnote8 = new SubitoNote('f3', 16);
+        var mnote9 = new SubitoNote('g3', 8);
+        var mnote10 = new SubitoNote('a1', 8);
 
         var beam = new SubitoBeam([note3, note4, note5, note6]);
         voice.addNote(note);
@@ -65,6 +69,10 @@
         voice.addNote(mnote4);
         voice.addNote(mnote5);
         voice.addNote(mnote6);
+        voice.addNote(mnote7);
+        voice.addNote(mnote8);
+        voice.addNote(mnote9);
+        voice.addNote(mnote10);
         measure.addContext(note);
         measure.addContext(note2);
         measure.addContext(note3);
@@ -72,13 +80,24 @@
         measure.addContext(note5);
         measure.addContext(note6);
 
-        var beam2 = new SubitoBeam([mnote3, mnote4, mnote5, mnote6]);
+        var beam2 = new SubitoBeam([mnote5, mnote6, mnote7, mnote8, mnote9]);
+        var beam3 = new SubitoBeam([mnote7, mnote8]);
+        var bonusbeam3 = new SubitoBeam([mnote7, mnote8]);
+        beam3.g.fillStyle = '#AAcc55';
+        var beam4 = new SubitoBeam([mnote1, mnote2, mnote3, mnote4]);
+        var beam5 = new SubitoBeam([mnote2, mnote3]);
+        var bonusbeam = new SubitoBeam([mnote2, mnote3]);
+        var bonusbeam4 = new SubitoBeam([mnote2, mnote3]);
         measure2.addContext(mnote1);
         measure2.addContext(mnote2);
         measure2.addContext(mnote3);
         measure2.addContext(mnote4);
         measure2.addContext(mnote5);
         measure2.addContext(mnote6);
+        measure2.addContext(mnote7);
+        measure2.addContext(mnote8);
+        measure2.addContext(mnote9);
+        measure2.addContext(mnote10);
         measure2.setBarline('final');
 
         stave.setKey(key);

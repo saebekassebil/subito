@@ -69,7 +69,8 @@ var SubitoSVGContext = (function() {
       glyph.scale(this.renderer.settings.scale);
       glyph.move(0.5, 0.5);
       path.setAttribute('d', glyph.path);
-      path.setAttribute('stroke', this.strokeStyle || this.renderer.settings.strokecolor);
+      path.setAttribute('stroke', this.strokeStyle ||
+          this.renderer.settings.strokecolor);
       path.setAttribute('stroke-width', this.lineWidth);
       if (this.globalAlpha !== 1.0) {
         path.setAttribute('opacity', this.globalAlpha);
@@ -88,7 +89,8 @@ var SubitoSVGContext = (function() {
       glyph.scale(this.renderer.settings.scale);
       glyph.move(0.5, 0.5);
       path.setAttribute('d', glyph.path);
-      path.setAttribute('fill', this.fillStyle || this.renderer.settings.fillcolor);
+      path.setAttribute('fill', this.fillStyle ||
+          this.renderer.settings.fillcolor);
       if (this.globalAlpha !== 1.0) {
         path.setAttribute('opacity', this.globalAlpha);
       }
@@ -162,6 +164,17 @@ var SubitoSVGContext = (function() {
         width: parseFloat(this.context.width.baseVal.value),
         height: parseFloat(this.context.height.baseVal.value)
       };
+    },
+
+    drawDot: function(x, y, r) {
+      var circle = create('circle');
+      circle.setAttribute('cx', x);
+      circle.setAttribute('cy', y);
+      circle.setAttribute('r', r);
+      circle.setAttribute('fill', 'red');
+      circle.setAttribute('transform',
+          'scale('+this.renderer.settings.scale+')');
+      this.context.appendChild(circle);
     }
   };
   

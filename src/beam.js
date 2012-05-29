@@ -7,87 +7,193 @@ function SubitoBeam(notes) {
 
   this.graphical = this.g = {};
   this.g.rendered = false;
+  this.slope = null;
+  this.nextBeam = null;
+  this.previousBeam = null;
 }
 
 SubitoBeam.prototype.render = function(renderer) {
   if (this.notes.length < 2 || !this.ready()) {
     return false;
   }
+  var ctx = renderer.context, notes = this.notes, notea, noteb, slope,
+      maxslope = 0, peak, newy,
+      beamwidth = renderer.settings.beam.width,
+      stemwidth = renderer.settings.note.stemwidth,
+      beamNumber = renderer.flags.beamNumber,
+      head = notes[0].getHeadGlyphName(),
+      headwidth = renderer.font.glyphs[head].hoz * renderer.font.scale.x,
+      i = 0, length = notes.length - 1, stem = this.getStem();
 
-  var ctx = renderer.context;
-  var notes = this.notes, notea, noteb, slope, maxslope = 0, peak;
-  var head = notes[0].getHeadGlyphName();
-  var headwidth = renderer.font.glyphs[head].hoz * renderer.font.scale.x;
+  if (typeof beamNumber === 'undefined') {
+    renderer.flags.beamNumber = beamNumber = 0;
+  }
 
-  for(var i = 0, length = notes.length-1; i < length; i++) {
-    notea = notes[i];
-    noteb = notes[i+1];
+  if (beamNumber > 0) { // This is not the first beam
+    maxslope = notes[0].beams[0].slope;
+    peak = 0;
+  } else { // This is the first beam
+    for(; i < length; i++) {
+      notea = notes[i];
+      noteb = notes[i+1];
 
-    slope = (noteb.g.y - notea.g.y) / (noteb.g.x - notea.g.x);
-    if(Math.abs(slope) > Math.abs(maxslope)) {
-      maxslope = slope;
-      peak = i+1;
-    } else if ((maxslope > 0 && slope < 0) || (maxslope < 0 && slope > 0)) {
-      maxslope = 0;
-      peak = i;
-      break;
+      slope = (noteb.g.y - notea.g.y) / (noteb.g.x - notea.g.x);
+      if(Math.abs(slope) > Math.abs(maxslope)) {
+        maxslope = slope;
+        peak = (stem === 'up') ? i+1 : i;
+      } else if ((maxslope > 0 && slope < 0) || (maxslope < 0 && slope > 0)) {
+        maxslope = 0;
+        peak = i;
+        break;
+      }
+    }
+
+    // If the slope is too steep, we'll adjust to use the default slope
+    if (Math.abs(maxslope) > renderer.settings.beam.slope) {
+      // sign(maxslope) * defslope
+      maxslope = Math.abs(maxslope)/maxslope * renderer.settings.beam.slope;
+    }
+
+    for(i = 0, length = length + 1; i < length; i++) {
+      notea = notes[i];
+      newy = notes[peak].g.y - (notes[peak].g.x-notea.g.x) * maxslope;
+      notea.g.stemlength = renderer.settings.note.stem +
+                            Math.abs((newy - notea.g.y));
+
+      // "Artificially" add the extended stemlength - Yikes
+      ctx.beginPath();
+      if(stem === 'down') {
+        ctx.moveTo(notea.g.x, notea.g.y+notea.g.stemlength);
+        ctx.lineTo(notea.g.x, notea.g.y+renderer.settings.note.stem);
+      } else {
+        ctx.moveTo(notea.g.x + headwidth - renderer.settings.note.stemwidth/2,
+            notea.g.y - renderer.settings.note.stem);
+        ctx.lineTo(notea.g.x + headwidth - renderer.settings.note.stemwidth/2,
+            notea.g.y - renderer.settings.note.stem + (newy - notea.g.y));
+      }
+      ctx.closePath();
+      ctx.stroke();
     }
   }
 
-  if (Math.abs(maxslope) > renderer.settings.beam.slope) {
-    maxslope = Math.abs(maxslope)/maxslope * renderer.settings.beam.slope;
-  }
-
-  for(i = 0, length = length + 1; i < length; i++) {
-    notea = notes[i];
-    var newy = notes[peak].g.y - (notes[peak].g.x-notea.g.x) * maxslope;
-    notea.g.stemlength = renderer.settings.note.stem + Math.abs((newy - notea.g.y));
-
-    // "Artificially" add the extended stemlength - Yikes
-    ctx.beginPath();
-    if(this.getStem() == 'down') {
-      ctx.moveTo(notea.g.x, notea.g.y+notea.g.stemlength);
-      ctx.lineTo(notea.g.x, notea.g.y+renderer.settings.note.stem);
-    } else {
-      ctx.moveTo(notea.g.x + headwidth - renderer.settings.note.stemwidth/2,
-          notea.g.y - renderer.settings.note.stem);
-      ctx.lineTo(notea.g.x + headwidth - renderer.settings.note.stemwidth/2,
-          notea.g.y - renderer.settings.note.stem + (newy - notea.g.y));
-    }
-    ctx.closePath();
-    ctx.stroke();
-  }
 
   // Render beam
-  var first = notes[0].g, last = notes[length-1].g,
-      beamwidth = renderer.settings.beam.width,
-      stemwidth = renderer.settings.note.stemwidth;
-  if(this.getStem() == 'up') {
-    ctx.beginPath();
-    ctx.moveTo(first.x + headwidth - stemwidth,
-        first.y - (beamwidth - 2) - first.stemlength);
-    ctx.lineTo(first.x + headwidth - stemwidth,
-        first.y + 2 - first.stemlength);
-    ctx.lineTo(last.x + headwidth, last.y + 2 - last.stemlength);
-    ctx.lineTo(last.x + headwidth, last.y - (beamwidth - 2) - last.stemlength);
-    ctx.closePath();
-    ctx.fill();
+  var fnote = notes[0].g, lnote = notes[notes.length-1].g;
+  var yshift = beamNumber * (beamwidth * 1.5);
+  if (beamNumber > 0) {
+    if (stem === 'up') {
+      first = {
+        top: {
+          x: fnote.x + headwidth - stemwidth,
+          y: fnote.y - fnote.stemlength - (beamwidth / 2) - 0.5 + yshift
+        },
+
+        bottom: {
+          x: fnote.x + headwidth - stemwidth,
+          y: fnote.y - fnote.stemlength + beamwidth / 2 - 0.5+ yshift
+        }
+      };
+
+      last = {
+        top: {
+          x: lnote.x + headwidth,
+          y: first.top.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
+        },
+
+        bottom: {
+          x: lnote.x + headwidth,
+          y: first.bottom.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
+        }
+      };
+    } else {
+      first = {
+        top: {
+          x: fnote.x - stemwidth / 2,
+          y: fnote.y + fnote.stemlength - (beamwidth / 2) - yshift
+        },
+
+        bottom: {
+          x: fnote.x - stemwidth / 2,
+          y: fnote.y + fnote.stemlength + beamwidth / 2 - yshift
+        }
+      };
+
+      last = {
+        top: {
+          x: lnote.x + stemwidth / 2,
+          y: first.top.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
+        },
+
+        bottom: {
+          x: lnote.x + stemwidth / 2,
+          y: first.bottom.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
+        }
+      };
+    }
+  } else if (stem === 'up') {
+    first = {
+      top: {
+        x: fnote.x + headwidth - stemwidth,
+        y: fnote.y - (beamwidth / 2) - fnote.stemlength
+      },
+
+      bottom: {
+        x: fnote.x + headwidth - stemwidth,
+        y: fnote.y + beamwidth / 2 - fnote.stemlength
+      }
+    };
+
+    last = {
+      top: {
+        x: lnote.x + headwidth,
+        y: lnote.y - (beamwidth - 2) - lnote.stemlength
+      },
+
+      bottom: {
+        x: lnote.x + headwidth,
+        y: lnote.y + 2 - lnote.stemlength
+      }
+    };
   } else {
-    ctx.beginPath();
-    ctx.moveTo(first.x - stemwidth/2,
-        first.y + first.stemlength - (beamwidth - 1));
-    ctx.lineTo(first.x - stemwidth/2,
-        first.y + first.stemlength + 1);
-    ctx.lineTo(last.x + stemwidth/2,
-        last.y + last.stemlength + 1);
-    ctx.lineTo(last.x + stemwidth/2,
-        last.y + last.stemlength - (beamwidth - 1));
-    ctx.closePath();
-    ctx.fill();
+    first = {
+      top: {
+        x: fnote.x - stemwidth/2,
+        y: fnote.y + fnote.stemlength - (beamwidth - 1)
+      },
+
+      bottom: {
+        x: fnote.x - stemwidth/2,
+        y: fnote.y + fnote.stemlength + 1
+      }
+    };
+
+    last = {
+      top: {
+        x: lnote.x + stemwidth / 2,
+        y: lnote.y + lnote.stemlength - (beamwidth - 1)
+      },
+
+      bottom: {
+        x: lnote.x + stemwidth / 2,
+        y: lnote.y + lnote.stemlength + 1
+      }
+    };
   }
 
+  ctx.beginPath();
+  ctx.moveTo(first.top.x, first.top.y);
+  ctx.lineTo(first.bottom.x, first.bottom.y);
+  ctx.lineTo(last.bottom.x, last.bottom.y);
+  ctx.lineTo(last.top.x, last.top.y);
+  ctx.closePath();
+  ctx.fill();
 
+  this.slope = maxslope;
   this.g.rendered = true;
+  if (this.nextBeam instanceof SubitoBeam) {
+    renderer.flags.beamNumber++;
+    this.nextBeam.render(renderer);
+  }
 };
 
 SubitoBeam.prototype.ready = function() {
@@ -111,6 +217,9 @@ SubitoBeam.prototype.addNote = function(note) {
 
 SubitoBeam.prototype.getStem = function() {
   var up = 0, down = 0, avgPos = 0, dir, pos, note;
+  if (this.previousBeam instanceof SubitoBeam) {
+    return this.previousBeam.getStem();
+  }
 
   for(var i = 0, length = this.notes.length; i < length; i++) {
     note = this.notes[i];
@@ -136,3 +245,20 @@ SubitoBeam.prototype.getStem = function() {
 
   return dir;
 };
+
+SubitoBeam.prototype.setNextBeam = function(beam) {
+  if (!(beam instanceof SubitoBeam)) {
+    throw new Subito.Exception('InvalidBeam', 'Invalid beam as parameter');
+  }
+
+  this.nextBeam = beam;
+};
+
+SubitoBeam.prototype.setPreviousBeam = function(beam) {
+  if (!(beam instanceof SubitoBeam)) {
+    throw new Subito.Exception('InvalidBeam', 'Invalid beam as parameter');
+  }
+
+  this.previousBeam = beam;
+};
+

@@ -98,9 +98,13 @@ SubitoNote.prototype.render = function(renderer) {
 
     ctx.renderGlyph(flag, flagx, flagy);
   } else if(this.beams.length > 0) { // Render beams
-    for(i = 0, length = this.beams.length; i < length; i++) {
-      this.beams[i].render(renderer);
+    for(i = 0, length = this.beams.length-1; i < length; i++) {
+      this.beams[i].setNextBeam(this.beams[i+1]);
+      this.beams[i+1].setPreviousBeam(this.beams[i]);
     }
+
+    this.beams[0].render(renderer);
+    delete renderer.flags.beamNumber;
   }
 
   // Render stem if any

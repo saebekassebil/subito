@@ -147,7 +147,7 @@ SubitoMeasure.prototype.render = function(renderer) {
     context = this.contexts[i];
     if(context instanceof SubitoNote) {
       context.render(renderer);
-      shift = metric.rwidth/context.tnote.duration; // metric.rwidth/context.tnote.duration
+      shift = metric.rwidth/context.tnote.duration;
       this.g.pen.x += shift;
     }
   }
