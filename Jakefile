@@ -31,7 +31,9 @@ var kBuildDir = 'build/';
 var kSourceDir = 'src/';
 var kMainFile = 'subito.js';
 var kBuildFilename = 'subito.js';
+var kBuildFontFilename = 'subito.font.js';
 var kBuildMinFilename = 'subito.min.js';
+var kBuildMinFontFilename = 'subito.font.min.js';
 
 // Utility function which respects the 'silent' setting
 function log(text, type, acolor, nolabel) {
@@ -80,7 +82,7 @@ task({'default': ['lint', 'build']}, function(parameters) {
 desc('Concatenates all files into build/subito.js');
 task('build', function() {
   var params, exists, concatenation, filename;
-  filename = kBuildDir + kBuildFilename;
+  filename = kBuildFilename;
 
   // List settings
   params = Array.prototype.slice.call(arguments);
@@ -130,12 +132,14 @@ task('build', function() {
 
       log('Saved ' + ratio + '% of the original size');
       concatenation = compressed;
-      filename = kBuildDir + kBuildMinFilename;
+      filename = (settings.font) ? kBuildMinFontFilename : kBuildMinFilename;
+    } else if(settings.font) {
+      filename = kBuildFontFilename;
     }
 
     // Write to file and close!
     log('Writing to output file \'' + filename + '\'');
-    fs.writeFileSync(filename, concatenation, 'utf8');
+    fs.writeFileSync(kBuildDir + filename, concatenation, 'utf8');
     log('Concatenation completed - Goodbye!');
   });
 
