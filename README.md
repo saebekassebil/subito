@@ -15,22 +15,18 @@ improving, and hopefully this might end up quite functional someday.
 
 ## Installation
 
-You'll need the *Mingler* and *jake* (and optionally *colors*) NPM packages, this
+You'll need the *mingler* and *jake* (and optionally *colors*) NPM packages, this
 shold be easy to install with `npm install` at the project root.
 
-Clone the repository:
+Clone the repository, fetch submodules and install dependencies:
 
-`git clone git://github.com/saebekassebil/subito.git`
-
-Fetch the submodule (teoria.js):
-
-`git submodule init && git submodule update`
+    $ git clone git://github.com/saebekassebil/subito.git
+    $ git submodule init && git submodule update
+    $ npm install
 
 Build the concatenated (and optionally minified) build file:
 
 `jake` or `jake build[minify]` or `jake build[font]` or `jake build[font,minify]`
-
-*(notice that the [font] option is required for playing with some of the examples)*
 
 ## Examples
 
@@ -40,7 +36,8 @@ found in `examples/scales.html`.
 
 ## Usage
 
-Right now I haven't made any documentation of the code, which is quite possibly a bad
+Right now I haven't made any documentation of the code, besides those notes
+which are already written in the source code. This is quite possibly a bad
 idea, but by diving into the code by looking at the examples and test documents you
 should be well on your way to understand the code.
 
