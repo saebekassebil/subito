@@ -80,6 +80,7 @@ SubitoBeam.prototype.render = function(renderer) {
   // Render beam
   var fnote = notes[0].g, lnote = notes[notes.length-1].g;
   var yshift = beamNumber * (beamwidth * 1.5);
+  var first, last;
   if (beamNumber > 0) {
     if (stem === 'up') {
       first = {
@@ -229,14 +230,14 @@ SubitoBeam.prototype.getStem = function() {
 
     pos = note.getStem(null, true);
     avgPos += note.getMetrics().position;
-    if(pos == 'up') {
+    if(pos === 'up') {
       up++;
     } else {
       down++;
     }
   }
 
-  if(up == down) {
+  if(up === down) {
     avgPos = avgPos/this.notes.length;
     dir = (avgPos > 2) ? 'up' : 'down';
   } else {

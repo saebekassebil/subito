@@ -1,5 +1,5 @@
 function SubitoScore(metadata) {
-  this.meta = (typeof metadata == 'object') ? metadata : {};
+  this.meta = (typeof metadata === 'object') ? metadata : {};
   this.contexts = [];
   this.graphical = this.g = {pen: {x: 0, y: 0}};
 }

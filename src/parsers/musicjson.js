@@ -9,12 +9,12 @@ Subito.Parsers.MusicJSON = (function() {
 
   function parseMeasure(measure) {
     var subitoMeasure = new SubitoMeasure(), subitoNote, note,
-        notes = [], beam, tryBeam = false;
+        notes = [], beam, tryBeam = false, name;
     if(Object.prototype.toString.call(measure.note) === '[object Array]') {
       for(var i = 0, length = measure.note.length; i < length; i++) {
         note = measure.note[i];
 
-        var name = note.pitch.step + note.pitch.octave;
+        name = note.pitch.step + note.pitch.octave;
         subitoNote = new SubitoNote(name, note.duration);
 
         if(note.duration >= 8) {
@@ -35,7 +35,7 @@ Subito.Parsers.MusicJSON = (function() {
       }
     } else {
       note = measure.note;
-      var name = note.pitch.step + note.pitch.octave;
+      name = note.pitch.step + note.pitch.octave;
       subitoNote = new SubitoNote(name, note.duration);
       subitoMeasure.addContext(subitoNote);
     }

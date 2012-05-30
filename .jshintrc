@@ -1,4 +1,22 @@
 {
+  "predef": [
+    "Subito",
+    "SubitoScore",
+    "SubitoSystem",
+    "SubitoStave",
+    "SubitoMeasure",
+    "SubitoNote",
+    "SubitoElement",
+    "SubitoGlyph",
+    "SubitoKey",
+    "SubitoClef",
+    "SubitoBeam",
+    "SubitoSVGContext",
+    "SubitoRenderer",
+    "SubitoVoice",
+    "teoria"
+  ],
+
   "maxlen":   80,
   "browser":  true,
   "devel":    true,
@@ -9,5 +27,10 @@
   "nonew":    true,
   "onevar":   false,
   "plusplus": false,
-  "trailing": true
+  "trailing": true,
+  "eqeqeq": true,
+  "forin": true,
+  "latedef": true,
+  "undef": true,
+  "evil": false
 }

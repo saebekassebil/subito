@@ -24,7 +24,7 @@ SubitoKey.prototype.render = function(renderer, x, y) {
 
   for(var i = 0; i < abs; i++) {
     posy = accidentals[i]*(renderer.settings.measure.linespan/2);
-    if(clef.name == 'f') {
+    if(clef.name === 'f') {
       posy += renderer.settings.measure.linespan;
     }
 

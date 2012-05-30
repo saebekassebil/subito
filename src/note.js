@@ -88,7 +88,7 @@ SubitoNote.prototype.render = function(renderer) {
     var flagx = this.g.x;
     var flagy = yshift;
 
-    if(direction == 'up') {
+    if(direction === 'up') {
       flagx += headwidth;
       flagy = flagy + (y - stemlength);
     } else {
@@ -109,7 +109,7 @@ SubitoNote.prototype.render = function(renderer) {
 
   // Render stem if any
   if(this.tnote.duration >= 2) {
-    if(direction == 'up') {
+    if(direction === 'up') {
       stemx = this.g.x +
         font.glyphs[head].hoz * font.scale.x - 0.5;
 
@@ -147,16 +147,16 @@ SubitoNote.prototype.getHeadGlyphName = function() {
 SubitoNote.prototype.getFlagGlyphName = function() {
   var duration = this.tnote.duration;
   var direction = this.getStem(this.measure.getClef());
-  if(duration == 8) {
-    return (direction == 'up') ? 'flags.u3' : 'flags.d3';
-  } else if(duration == 16) {
-    return (direction == 'up') ? 'flags.u4' : 'flags.d4';
-  } else if(duration == 32) {
-    return (direction == 'up') ? 'flags.u5' : 'flags.d5';
-  } else if(duration == 64) {
-    return (direction == 'up') ? 'flags.u6' : 'flags.d6';
-  } else if(duration == 128) {
-    return (direction == 'up') ? 'flags.u7' : 'flags.d7';
+  if(duration === 8) {
+    return (direction === 'up') ? 'flags.u3' : 'flags.d3';
+  } else if(duration === 16) {
+    return (direction === 'up') ? 'flags.u4' : 'flags.d4';
+  } else if(duration === 32) {
+    return (direction === 'up') ? 'flags.u5' : 'flags.d5';
+  } else if(duration === 64) {
+    return (direction === 'up') ? 'flags.u6' : 'flags.d6';
+  } else if(duration === 128) {
+    return (direction === 'up') ? 'flags.u7' : 'flags.d7';
   }
 };
 

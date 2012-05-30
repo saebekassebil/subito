@@ -8,14 +8,14 @@
       var children = el.childNodes, child;
       for(var i = 0, length = children.length; i < length; i++) {
         child = children[i];
-        if(child.tagName && child.tagName.toLowerCase() == 'script') {
+        if(child.tagName && child.tagName.toLowerCase() === 'script') {
           var type = child.getAttribute('type') || null;
           if(!type) {
             return false;
           }
           
           type = type.split('/');
-          type = (type.length == 2) ? type[1] : type[0];
+          type = (type.length === 2) ? type[1] : type[0];
           console.log(type);
           var subito = new Subito(el);
           subito.parse(child.innerHTML);
@@ -33,7 +33,7 @@
     var classname;
 
     for(var i = 0, length = canvas.length; i < length; i++) {
-      if(canvas[i].className.indexOf('subito') != -1) {
+      if(canvas[i].className.indexOf('subito') !== -1) {
         createSubitoInstance(canvas[i]);
       }
     }
@@ -42,7 +42,7 @@
       classname = (svg[i].className.baseVal) ? svg[i].className.baseVal :
                                                svg[i].className;
 
-      if(classname.indexOf('subito') != -1) {
+      if(classname.indexOf('subito') !== -1) {
         createSubitoInstance(svg[i]);
       }
     }

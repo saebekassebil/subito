@@ -33,22 +33,22 @@ SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
     var g = this.graphical || {};
     var width = g.width || defaults.measure.width;
     var height = g.height || defaults.measure.linespan * 4;
-    var highest = 0, rwidth;
+    var highest = 0, rwidth, clef = this.getClef();
 
     for(var i = 0, length = this.contexts.length; i < length; i++) {
       if(this.contexts[i] instanceof SubitoNote) {
         var metric = this.contexts[i].getMetrics();
-        var notey = metric.position * defaults.measure.linespan + 
-              (this.contexts[i].getStem(this.getClef()) === 'up' ? -1 : 0) *
+        var stem = this.contexts[i].getStem(clef);
+        var notey = metric.position * defaults.measure.linespan +
+              (stem === 'up' ? -1 : 0) *
               (metric.stemlength || defaults.note.stem) -
-              defaults.measure.linespan/2;
+              (stem === 'up' ? 0 : 1) * defaults.measure.linespan/2;
         highest = Math.min(highest, notey);
       }
     }
 
     rwidth = width;
     if(this.clef || renderer.flags && renderer.flags.renderClef) {
-      var clef = this.getClef();
       width += 3; // Prespacing
       width += clef.getMetrics(renderer).width;
     }
@@ -89,13 +89,13 @@ SubitoMeasure.prototype.render = function(renderer) {
 
 
   // Draw barline
-  if(this.barline == 'single') {
+  if(this.barline === 'single') {
     ctx.beginPath();
     ctx.moveTo(xshift + metric.width + 0.5, yshift);
     ctx.lineTo(xshift + metric.width + 0.5, yshift + y);
     ctx.closePath();
     ctx.stroke();
-  } else if(this.barline == 'final') {
+  } else if(this.barline === 'final') {
     ctx.beginPath();
     ctx.moveTo(xshift + metric.width - 7.5, yshift);
     ctx.lineTo(xshift + metric.width - 7.5, yshift + y);
