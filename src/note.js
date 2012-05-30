@@ -16,7 +16,7 @@ SubitoNote.prototype.render = function(renderer) {
   var ctx = renderer.context;
   var font = renderer.font;
   var head = this.getHeadGlyphName();
-  var headwidth = renderer.font.glyphs[head].hoz * renderer.font.scale.x;
+  var headwidth = font.glyphs[head].hoz * font.scale.x;
   var clef = this.measure.getClef();
   var yshift = this.measure.g.pen.y;
   var lpos, lx, ly, i, length, stemx, ls, pos, y;
@@ -89,7 +89,7 @@ SubitoNote.prototype.render = function(renderer) {
     var flagy = yshift;
 
     if(direction == 'up') {
-      flagx += font.glyphs[head].hoz * font.scale.x;
+      flagx += headwidth;
       flagy = flagy + (y - stemlength);
     } else {
       flagx += 0.5;

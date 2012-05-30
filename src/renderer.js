@@ -210,6 +210,11 @@ SubitoRenderer.DefaultSettings = {
     width: 3
   },
 
+  score: {
+    margintop: 5,
+    marginleft: 5
+  },
+
   // Font
   font: 'Gonville',
 

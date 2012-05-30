@@ -16,7 +16,8 @@ SubitoSystem.prototype.addContext = function(context) {
 };
 
 SubitoSystem.prototype.render = function(ctx) {
-  var linebreak = false;
+  this.g.pen.x = this.score.g.pen.x;
+  this.g.pen.y = this.score.g.pen.y;
   for(var i = 0, length = this.contexts.length; i < length; i++) {
     var context = this.contexts[i];
     context.render(ctx);
@@ -35,4 +36,12 @@ SubitoSystem.prototype.getMetrics = function(renderer) {
   };
 
   return (this.cachedMetrics = metrics);
+};
+
+SubitoSystem.prototype.setScore = function(score) {
+  if(!(score instanceof SubitoScore)) {
+    throw new Subito.Exception('InvalidContext', 'Invalid score');
+  }
+
+  this.score = score;
 };

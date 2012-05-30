@@ -27,7 +27,8 @@ SubitoStave.prototype.render = function(renderer) {
   var stavemetrics = this.getMetrics(renderer);
   var stavewidth = 0, context, metric;
 
-  this.g.pen.y = this.system.getMetrics(renderer).y;
+  this.g.pen.x = this.system.g.pen.x;
+  this.g.pen.y = this.system.g.pen.y;
 
   for(var i = 0, length = this.contexts.length; i < length; i++) {
     context = this.contexts[i];

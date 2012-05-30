@@ -38,9 +38,11 @@ SubitoMeasure.prototype.getMetrics = function(renderer, nocache) {
     for(var i = 0, length = this.contexts.length; i < length; i++) {
       if(this.contexts[i] instanceof SubitoNote) {
         var metric = this.contexts[i].getMetrics();
-        highest = Math.min(highest, metric.position *
-            renderer.settings.measure.linespan -
-            renderer.settings.measure.linespan);
+        var notey = metric.position * defaults.measure.linespan + 
+              (this.contexts[i].getStem(this.getClef()) === 'up' ? -1 : 0) *
+              (metric.stemlength || defaults.note.stem) -
+              defaults.measure.linespan/2;
+        highest = Math.min(highest, notey);
       }
     }
 
