@@ -23,7 +23,7 @@ Subito.prototype.setScore = function(score) {
 
 Subito.prototype.render = function() {
   if(this.score) {
-    this.score.render();
+    this.score.render(this.renderer);
     return true;
   }
   
@@ -39,12 +39,7 @@ Subito.prototype.parse = function(source, type) {
 
   if(typeof Subito.Parsers[type] === 'function') {
     var parser = new Subito.Parsers[type](source);
-    try {
-      this.score = parser.parseScore();
-    } catch(e) {
-      return e;
-    }
-
+    this.score = parser.parseScore();
     return true;
   }
   
@@ -83,6 +78,7 @@ Subito._isArray = function(element) {
 //=include score.js
 //=include system.js
 //=include stave.js
+//=include beam.js
 //=include measure.js
 //=include note.js
 //=include clef.js
