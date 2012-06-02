@@ -5,22 +5,23 @@
 Subito is a JavaScript library for music engraving. It strives to render beautiful
 music scores, while maintaining a good level of performance. Subito is the main project
 of the *Subito Project* which aims at providing a full musical understanding to the
-web. It includes *Teoria.js*, a robust music theory framework, MusicJSON which is a 
+web. It includes *teoria.js*, a robust music theory framework, *MusicJSON* which is a 
 port of the MusicXML language to the more simple and lightweight JSON. Futhermore a
 *fontviewer* side-project is available for listing all available glyphs in a SVG
 font file.
 
-I'm far from even having a somewhat functional framework, but the code is constantly
-improving, and hopefully this might end up quite functional someday.
+I'm far from having an even somewhat functional framework, but the code is constantly
+improving, and hopefully it might end up quite functional.
 
 ## Installation
 
-You'll need the *mingler* and *jake* (and optionally *colors*) NPM packages, this
-shold be easy to install with `npm install` at the project root.
+You'll need the *mingler* and *jake* (and optionally *colors* and *uglify-js*) 
+NPM packages, this shold be easy to install with `npm install` at the project root.
 
 Clone the repository, fetch submodules and install dependencies:
 
     $ git clone git://github.com/saebekassebil/subito.git
+    $ cd subito
     $ git submodule init && git submodule update
     $ npm install
 
@@ -30,9 +31,9 @@ Build the concatenated (and optionally minified) build file:
 
 ## Examples
 
-The main file I use for testing i located at `test/index.html` and this is where
+The main file I use for testing is located at `test/index.html` and this is where
 you can see the programmatic usage of the library. A more extravagant example is
-found in `examples/scales.html`.
+found in `examples/scales.html` and a live editor example in `examples/parsing.html`
 
 ## Usage
 
