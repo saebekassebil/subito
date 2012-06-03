@@ -35,12 +35,14 @@
         var system = new SubitoSystem();
         var stave = new SubitoStave();
         var clef = new SubitoClef(clefSign);
+        var time = new SubitoTime(scale.notes.length, 4);
         var renderer = new SubitoRenderer(document.getElementById('canvas'));
         var measure = new SubitoMeasure();
         measure.g.width = renderer.context.getMetrics().width /
           renderer.settings.scale - 50;
 
         stave.setClef(clef);
+        stave.setTime(time);
         system.addContext(stave);
         score.addContext(system);
 

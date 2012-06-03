@@ -50,7 +50,7 @@ SubitoMeasure.prototype = {
       }
 
       rwidth = width;
-      if(this.clef || renderer.flags && renderer.flags.renderClef) {
+      if(this.clef || (renderer.flags && renderer.flags.renderClef)) {
         width += 3; // Prespacing
         width += clef.getMetrics(renderer).width;
       }
@@ -59,6 +59,10 @@ SubitoMeasure.prototype = {
         var key = this.getKey();
         width += key.getMetrics(renderer).width;
         width += 20; // Some nice space
+      }
+
+      if(this.time || (renderer.flags && renderer.flags.renderTime)) {
+        width += this.getTime().getMetrics(renderer).width;
       }
 
       var metrics = {
@@ -77,7 +81,7 @@ SubitoMeasure.prototype = {
     var metric = this.getMetrics();
     var xshift = this.stave.g.pen.x;
     var yshift = this.stave.g.pen.y;
-    var y;
+    var y, time;
 
     // Draw stavelines
     for(var i = 0, length = 5; i < length; i++) {
@@ -135,23 +139,29 @@ SubitoMeasure.prototype = {
 
       key.render(renderer, xshift, yshift);
       xshift += key.getMetrics(renderer).width;
+      xshift += 5; // Some nice space
+    }
+
+    if(flags.renderTime || this.time) {
+      time = this.getTime();
+      var timeY = renderer.settings.measure.linespan * time.line;
+      time.render(renderer, xshift, yshift + timeY);
+
+      xshift += time.getMetrics(renderer).width;
       xshift += 10; // Some nice space
     }
 
-    // Draw time signature
-    /*if(flags.renderTime || this.time) {
-     *
-    }*/
-
     // Render notes
     var context, shift;
+    time = time || this.getTime();
     this.g.pen.x = xshift;
     this.g.pen.y = yshift;
     for(i = 0, length = this.contexts.length; i < length; i++) {
       context = this.contexts[i];
       if(context instanceof SubitoNote) {
         context.render(renderer);
-        shift = metric.rwidth/context.tnote.duration;
+        //shift = metric.rwidth/context.tnote.duration;
+        shift = (metric.rwidth/time.count) / (context.tnote.duration/time.unit);
         this.g.pen.x += shift;
       }
     }
@@ -179,6 +189,16 @@ SubitoMeasure.prototype = {
       return this.key;
     } else if(this.stave instanceof SubitoStave) {
       return this.stave.getKey();
+    } else {
+      return null;
+    }
+  },
+
+  getTime: function measureGetTime() {
+    if(this.time instanceof SubitoTime) {
+      return this.time;
+    } else if(this.stave instanceof SubitoStave) {
+      return this.stave.getTime();
     } else {
       return null;
     }

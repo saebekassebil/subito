@@ -10,6 +10,7 @@
     "SubitoGlyph",
     "SubitoKey",
     "SubitoClef",
+    "SubitoTime",
     "SubitoBeam",
     "SubitoSVGContext",
     "SubitoRenderer",

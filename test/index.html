@@ -11,6 +11,7 @@
     <script src="../src/measure.js"></script>
     <script src="../src/note.js"></script>
     <script src="../src/clef.js"></script>
+    <script src="../src/time.js"></script>
     <script src="../src/beam.js"></script>
     <script src="../src/voice.js"></script>
     <script src="../src/element.js"></script>
@@ -34,6 +35,7 @@
         var system = new SubitoSystem();
         var stave = new SubitoStave();
         var key = new SubitoKey('esmajor');
+        var time = new SubitoTime(4, 4, true);
         var measure = new SubitoMeasure();
         var measure2 = new SubitoMeasure();
         var measure3 = new SubitoMeasure();
@@ -108,6 +110,7 @@
         measure3.addContext(xnote1);
 
         stave.setKey(key);
+        stave.setTime(time);
         stave.addContext(measure);
         stave.addContext(measure2);
         stave.addContext(measure3);

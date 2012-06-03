@@ -4,6 +4,7 @@ function SubitoStave(contexts) {
   this.g.pen = {x: 0, y: 0};
 
   this.key = null;
+  this.time = null;
 }
 
 SubitoStave.prototype = {
@@ -36,9 +37,14 @@ SubitoStave.prototype = {
           if(this.key) {
             renderer.flags.renderKey = true;
           }
+
+          if(this.time) {
+            renderer.flags.renderTime = true;
+          }
         } else if(i === 1) {
           renderer.flags.renderClef = false;
           renderer.flags.renderKey = false;
+          renderer.flags.renderTime = false;
         }
 
         metric = context.getMetrics(renderer, true);
@@ -72,9 +78,14 @@ SubitoStave.prototype = {
           if(this.key) {
             renderer.flags.renderKey = true;
           }
+
+          if(this.time) {
+            renderer.flags.renderTime = true;
+          }
         } else if(i === 1) {
           renderer.flags.renderClef = false;
           renderer.flags.renderKey = false;
+          renderer.flags.renderTime = false;
         }
 
         metric = context.getMetrics(renderer, true);
@@ -113,8 +124,30 @@ SubitoStave.prototype = {
   },
 
   setKey: function staveSetKey(key) {
-    this.key = key;
-    this.key.setParent(this);
+    if(key instanceof SubitoKey) {
+      this.key = key;
+      key.setParent(this);
+    } else {
+      throw new Subito.Exception('InvalidKey', 'Invalid parameter');
+    }
+  },
+
+  setTime: function staveSetTime(time) {
+    if(time instanceof SubitoTime) {
+      this.time = time;
+      time.setParent(this);
+    } else {
+      throw new Subito.Exception('InvalidTime', 'Invalid parameter');
+    }
+  },
+
+  getTime: function staveGetTime() {
+    if(!this.time) {
+      Subito.log('No time signature assigned to stave', 'warn');
+      this.time = new SubitoTime(4, 4);
+    }
+
+    return this.time;
   },
 
   getMetrics: function staveGetMetrics(renderer) {
