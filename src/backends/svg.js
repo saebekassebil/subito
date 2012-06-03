@@ -25,7 +25,7 @@ var SubitoSVGContext = (function() {
 
   constructor.prototype = {
     /* Path API */
-    moveTo: function(x, y) {
+    _exMoveTo: function svgBackendMoveTo(x, y) {
       this.path += 'M' + x + ' ' + y;
       
       this.pen.x = x;
@@ -34,7 +34,7 @@ var SubitoSVGContext = (function() {
       return this;
     },
       
-    lineTo: function(x, y) {
+    _exLineTo: function svgBackendLineTo(x, y) {
       this.path += 'L' + x + ' ' + y;
       
       this.pen.x = x;
@@ -43,7 +43,7 @@ var SubitoSVGContext = (function() {
       return this;
     },
     
-    beginPath: function() {
+    beginPath: function svgBackendBeginPath() {
       this.path = '';
       
       this.pen.x = 0;
@@ -52,7 +52,7 @@ var SubitoSVGContext = (function() {
       return this;
     },
     
-    closePath: function() {
+    closePath: function svgBackendClosePath() {
       this.path += 'Z';
       
       this.pen.x = 0;
@@ -61,14 +61,14 @@ var SubitoSVGContext = (function() {
       return this;
     },
     
-    stroke: function() {
+    stroke: function svgBackendStroke() {
       var scale = this.renderer.settings.scale;
       var glyph = new SubitoGlyph({path: this.path});
       var path = create('path');
 
       glyph.scale(this.renderer.settings.scale);
       glyph.move(0.5, 0.5);
-      path.setAttribute('d', glyph.path);
+      path.setAttribute('d', glyph.getPath());
       path.setAttribute('stroke', this.strokeStyle ||
           this.renderer.settings.strokecolor);
       path.setAttribute('stroke-width', this.lineWidth);
@@ -81,14 +81,14 @@ var SubitoSVGContext = (function() {
       return this;
     },
 
-    fill: function() {
+    fill: function svgBackendFill() {
       var scale = this.renderer.settings.scale;
       var glyph = new SubitoGlyph({path: this.path});
       var path = create('path');
 
       glyph.scale(this.renderer.settings.scale);
       glyph.move(0.5, 0.5);
-      path.setAttribute('d', glyph.path);
+      path.setAttribute('d', glyph.getPath());
       path.setAttribute('fill', this.fillStyle ||
           this.renderer.settings.fillcolor);
       if (this.globalAlpha !== 1.0) {
@@ -101,7 +101,7 @@ var SubitoSVGContext = (function() {
     },
     
     /* Text API */
-    fillText: function(string, x, y) {
+    fillText: function svgBackendFillText(string, x, y) {
       var text = create('text');
       text.setAttribute('x', x);
       text.setAttribute('y', y);
@@ -111,7 +111,7 @@ var SubitoSVGContext = (function() {
       return this;
     },
     
-    save: function() {
+    save: function svgBackendSave() {
       this.stateStack.push({
         state: Object.create(this.state),
         font: Object.create(this.renderer.font),
@@ -123,7 +123,7 @@ var SubitoSVGContext = (function() {
       });
     },
     
-    restore: function() {
+    restore: function svgBackendRestore() {
       var stack = this.stateStack.pop();
       this.font = stack.font;
       this.attributes = stack.attributes;
@@ -135,7 +135,7 @@ var SubitoSVGContext = (function() {
     },
     
     /* Glyph API */
-    renderGlyph: function(glyphName, x, y) {
+    renderGlyph: function svgBackendRenderGlyph(glyphName, x, y) {
       var font = this.renderer.font;
       if(!font) {
         throw new Subito.Exception("Invalid Font");
@@ -154,19 +154,19 @@ var SubitoSVGContext = (function() {
       glyph.scale(scale); // scale to rendering scale
 
       var path = create('path');
-      path.setAttribute('d', glyph.path);
+      path.setAttribute('d', glyph.getPath());
       this.context.appendChild(path);
     },
     
     /* Subito Context Extensions */
-    getMetrics: function() {
+    getMetrics: function svgBackendGetMetrics() {
       return {
         width: parseFloat(this.context.width.baseVal.value),
         height: parseFloat(this.context.height.baseVal.value)
       };
     },
 
-    drawDot: function(x, y, r) {
+    drawDot: function svgBackendDrawDot(x, y, r) {
       var circle = create('circle');
       circle.setAttribute('cx', x);
       circle.setAttribute('cy', y);

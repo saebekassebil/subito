@@ -14,6 +14,8 @@
     "SubitoSVGContext",
     "SubitoRenderer",
     "SubitoVoice",
+    "SubitoGraphicSystemLine",
+    "SubitoGraphicStaveLine",
     "teoria"
   ],
 

@@ -8,51 +8,53 @@ function SubitoKey(key) {
   this.parent = null;
 }
 
-SubitoKey.prototype.render = function(renderer, x, y) {
-  var head, abs = Math.abs(this.key), posy, hoz, accidentals, clef;
-  if(this.key < 0) { // Flats
-    head = 'accidentals.flat';
-    accidentals = SubitoKey.Fifths.flat;
-  } else {
-    head = 'accidentals.sharp';
-    accidentals = SubitoKey.Fifths.sharp;
-  }
-
-  clef = this.parent.getClef();
-
-  hoz = renderer.font.glyphs[head].hoz * renderer.font.scale.x;
-
-  for(var i = 0; i < abs; i++) {
-    posy = accidentals[i]*(renderer.settings.measure.linespan/2);
-    if(clef.name === 'f') {
-      posy += renderer.settings.measure.linespan;
+SubitoKey.prototype = {
+  render: function keyRender(renderer, x, y) {
+    var head, abs = Math.abs(this.key), posy, hoz, accidentals, clef;
+    if(this.key < 0) { // Flats
+      head = 'accidentals.flat';
+      accidentals = SubitoKey.Fifths.flat;
+    } else {
+      head = 'accidentals.sharp';
+      accidentals = SubitoKey.Fifths.sharp;
     }
 
-    renderer.context.renderGlyph(head, x, y + posy);
-    x += hoz;
+    clef = this.parent.getClef();
+
+    hoz = renderer.font.glyphs[head].hoz * renderer.font.scale.x;
+
+    for(var i = 0; i < abs; i++) {
+      posy = accidentals[i]*(renderer.settings.measure.linespan/2);
+      if(clef.name === 'f') {
+        posy += renderer.settings.measure.linespan;
+      }
+
+      renderer.context.renderGlyph(head, x, y + posy);
+      x += hoz;
+    }
+  },
+
+  getMetrics: function keyGetMetrics(renderer) {
+    if(this.cachedMetrics) {
+      return this.cachedMetrics;
+    }
+
+    var metric = {
+      width: renderer.font.glyphs['accidentals.sharp'].hoz *
+        renderer.font.scale.x * Math.abs(this.key)
+    };
+
+    return (this.cachedMetric = metric);
+  },
+
+  setParent: function keySetParent(parent) {
+    if(!(parent instanceof SubitoMeasure) && !(parent instanceof SubitoStave)) {
+      throw new Subito.Exception('InvalidParent', 'Can\'t assign SubitoKey ' +
+          'to this element');
+    }
+
+    this.parent = parent;
   }
-};
-
-SubitoKey.prototype.getMetrics = function(renderer) {
-  if(this.cachedMetrics) {
-    return this.cachedMetrics;
-  }
-
-  var metric = {
-    width: renderer.font.glyphs['accidentals.sharp'].hoz *
-      renderer.font.scale.x * Math.abs(this.key)
-  };
-
-  return (this.cachedMetric = metric);
-};
-
-SubitoKey.prototype.setParent = function(parent) {
-  if(!(parent instanceof SubitoMeasure) && !(parent instanceof SubitoStave)) {
-    throw new Subito.Exception('InvalidParent', 'Can\'t assign SubitoKey ' +
-        'to this element');
-  }
-
-  this.parent = parent;
 };
 
 SubitoKey.Keys = {

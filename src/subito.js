@@ -11,6 +11,7 @@ function Subito(canvas) {
     this.renderer = new SubitoRenderer(canvas);
   }
 }
+Subito.C4 = 24;
 
 Subito.prototype.setScore = function(score) {
   if(!(score instanceof SubitoScore)) {
@@ -65,7 +66,16 @@ Subito.Exception = function(code, message) {
 };
 Subito.Exception.prototype = Error.prototype;
 
-Subito.C4 = 24;
+Subito.log = function() {
+  if(this.silent || typeof console === 'undefined') {
+    return false;
+  }
+  var args = Array.prototype.slice.call(arguments);
+  var type = (args[args.length-1] in console) ? args[args.length-1] : null;
+  var length = type ? args.length-1 : args.length;
+
+  console[type || 'log'].apply(console, args.slice(0, length));
+};
 
 // Utility functions
 Subito._isArray = function(element) {

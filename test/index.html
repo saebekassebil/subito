@@ -15,17 +15,20 @@
     <script src="../src/voice.js"></script>
     <script src="../src/element.js"></script>
     <script src="../src/key.js"></script>
-    <script src="../src/formatter.js"></script>
     <script src="../src/glyph.js"></script>
     <script src="../src/renderer.js"></script>
+    <script src="../src/graphicsystemline.js"></script>
+    <script src="../src/graphicstaveline.js"></script>
     <script src="../src/fonts/gonville.js"></script>
     <script src="../src/backends/svg.js"></script>
     
     <script>
       window.addEventListener('load', function() {
         var svg = document.getElementById('testsvg')
+        var canvas = document.getElementById('testcanvas');
 
         var subitosvg = new Subito(svg);
+        var subitocanvas = new Subito(canvas);
 
         var score = new SubitoScore();
         var system = new SubitoSystem();
@@ -33,6 +36,7 @@
         var key = new SubitoKey('esmajor');
         var measure = new SubitoMeasure();
         var measure2 = new SubitoMeasure();
+        var measure3 = new SubitoMeasure();
         measure2.setClef(new SubitoClef('f'));
         var voice = new SubitoVoice();
         var clef = new SubitoClef('g');
@@ -53,6 +57,8 @@
         var mnote8 = new SubitoNote('f3', 16);
         var mnote9 = new SubitoNote('g3', 8);
         var mnote10 = new SubitoNote('a1', 8);
+
+        var xnote1 = new SubitoNote('c4', 1);
 
         var beam = new SubitoBeam([note3, note4, note5, note6]);
         voice.addNote(note);
@@ -99,16 +105,27 @@
         measure2.addContext(mnote10);
         measure2.setBarline('final');
 
+        measure3.addContext(xnote1);
+
         stave.setKey(key);
         stave.addContext(measure);
         stave.addContext(measure2);
+        stave.addContext(measure3);
         stave.setClef(clef);
         system.addContext(stave);
         score.addContext(system);
         subitosvg.setScore(score);
 
+        //console.profile();
         var renderer = new SubitoRenderer(svg);
         renderer.renderScore(score);
+        //console.profileEnd()
+
+        subitocanvas.setScore(score);
+        //console.profile()
+        renderer = new SubitoRenderer(canvas);
+        renderer.renderScore(score);
+        //console.profileEnd();
       }, false);
     </script>
 
@@ -130,11 +147,17 @@
       #testsvg {
         border: 1px dashed #000000;
       }
+
+      #testcanvas {
+        margin-top: 20px;
+        border: 1px dashed #000000;
+      }
     </style>
   </head>
   <body>
     <div id="wrapper">
       <svg id="testsvg" height="250" width="1000"></svg>
+      <canvas id="testcanvas" height="250" width="1000"></canvas>
     </div>
   </body>
 </html>

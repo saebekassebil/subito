@@ -11,22 +11,22 @@ function SubitoClef(name) {
   this.c4 = clef.c4;
 }
 
-SubitoClef.prototype.render = function(renderer, x, y) {
-  var ctx = renderer.context;
+SubitoClef.prototype = {
+  render: function clefRender(renderer, x, y) {
+    renderer.context.renderGlyph(this.glyph, x, y);
+  },
 
-  ctx.renderGlyph(this.glyph, x, y);
-};
+  getMetrics: function clefGetMetrics(renderer) {
+    if(this.cachedMetrics) {
+      return this.cachedMetrics;
+    }
 
-SubitoClef.prototype.getMetrics = function(renderer) {
-  if(this.cachedMetrics) {
-    return this.cachedMetrics;
+    var metrics = {
+      width: renderer.font.glyphs[this.glyph].hoz * renderer.font.scale.x
+    };
+
+    return (this.cachedMetrics = metrics);
   }
-
-  var metrics = {
-    width: renderer.font.glyphs[this.glyph].hoz * renderer.font.scale.x
-  };
-
-  return (this.cachedMetrics = metrics);
 };
 
 SubitoClef.Clefs = {

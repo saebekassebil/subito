@@ -27,21 +27,33 @@ function SubitoRenderer(canvas, settings) {
   }
 }
 
-SubitoRenderer.prototype.extendCanvas = function(canvas) {
+SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
   var self = this;
 
-  canvas.renderGlyph = function(name, x, y) {
+  canvas._exLineTo = function canvasLineTo(x, y) {
+    this.lineTo(x * self.settings.scale + 0.5, y * self.settings.scale + 0.5);
+  };
+
+  canvas._exMoveTo = function canvasMoveTo(x, y) {
+    this.moveTo(x * self.settings.scale + 0.5, y * self.settings.scale + 0.5);
+  };
+
+  canvas.renderGlyph = function canvasRenderGlyph(name, x, y) {
     var font = self.font;
 
+    x = x * self.settings.scale;
+    y = y * self.settings.scale;
     if(!(name instanceof SubitoGlyph) && !font.glyphs[name]) {
       return Subito.log('Unsupported Glyph: ' + name , 'warn');
     }
 
+
     var glyph = (name instanceof SubitoGlyph) ? name :
       new SubitoGlyph(font.glyphs[name]);
-    //glyph.scale(self.settings.scale);
-    ////glyph.move(0.5, 0.5);
-    var path = glyph.bits;
+
+    glyph.scale(self.settings.scale);
+    glyph.move(0.5, 0.5);
+    var path = glyph.path, c, cname, cp1, cp2;
     var coords = {
         'start': {
           'x': x,
@@ -63,10 +75,12 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
 
     this.beginPath();
     for(var i = 0, length = path.length; i < length; i++) {
-      switch(path[i]) {
+      c = path[i];
+      cname = path[i][0];
+      switch(cname) {
       case 'M':
-        coords.coords.x = parseFloat(path[++i]);
-        coords.coords.y = parseFloat(path[++i]);
+        coords.coords.x = c[1];
+        coords.coords.y = c[2];
 
         this.moveTo(coords.start.x + (coords.coords.x*font.scale.x),
                     coords.start.y + (coords.coords.y*font.scale.y));
@@ -74,8 +88,8 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         break;
 
       case 'l':
-        coords.coords.x += parseFloat(path[++i]);
-        coords.coords.y += parseFloat(path[++i]);
+        coords.coords.x += c[1];
+        coords.coords.y += c[2];
 
         this.lineTo(coords.start.x + (coords.coords.x*font.scale.x),
                     coords.start.y + (coords.coords.y*font.scale.y));
@@ -83,7 +97,7 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         break;
 
       case 'h':
-        coords.coords.x += parseFloat(path[++i]);
+        coords.coords.x += c[1];
 
         this.lineTo(coords.start.x + (coords.coords.x*font.scale.x),
                     coords.start.y + (coords.coords.y*font.scale.y));
@@ -91,7 +105,7 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         break;
 
       case 'v':
-        coords.coords.y += parseFloat(path[++i]);
+        coords.coords.y += c[1];
 
         this.lineTo(coords.start.x + (coords.coords.x*font.scale.x),
                     coords.start.y + (coords.coords.y*font.scale.y));
@@ -99,11 +113,11 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         break;
 
       case 'q':
-        coords.controlpoint.x = coords.coords.x + parseFloat(path[++i]);
-        coords.controlpoint.y = coords.coords.y + parseFloat(path[++i]);
+        coords.controlpoint.x = coords.coords.x + c[1];
+        coords.controlpoint.y = coords.coords.y + c[2];
 
-        coords.coords.x += parseFloat(path[++i]);
-        coords.coords.y += parseFloat(path[++i]);
+        coords.coords.x += c[3];
+        coords.coords.y += c[4];
 
         this.quadraticCurveTo(
             coords.start.x + (coords.controlpoint.x*font.scale.x),
@@ -123,8 +137,8 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         coords.controlpoint.y = coords.coords.y +
             (coords.coords.y - coords.controlpoint.y);
 
-        coords.coords.x += parseFloat(path[++i]);
-        coords.coords.y += parseFloat(path[++i]);
+        coords.coords.x += c[1];
+        coords.coords.y += c[2];
 
         this.quadraticCurveTo(
             coords.start.x + (coords.controlpoint.x*font.scale.x),
@@ -135,18 +149,46 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         break;
 
       case 'c':
-        var cp1 = {
-          x: coords.coords.x + parseFloat(path[++i]),
-          y: coords.coords.y + parseFloat(path[++i])
+        cp1 = {
+          x: coords.coords.x + c[1],
+          y: coords.coords.y + c[2]
         };
 
-        var cp2 = {
-          x: coords.coords.x + parseFloat(path[++i]),
-          y: coords.coords.y + parseFloat(path[++i])
+        cp2 = {
+          x: coords.coords.x + c[3],
+          y: coords.coords.y + c[4]
         };
+
+        coords.controlpoint.x = cp2.x;
+        coords.controlpoint.y = cp2.y;
         
-        coords.coords.x += parseFloat(path[++i]);
-        coords.coords.y += parseFloat(path[++i]);
+        coords.coords.x += c[5];
+        coords.coords.y += c[6];
+
+        this.bezierCurveTo(
+            coords.start.x + cp1.x*font.scale.x,
+            coords.start.y + cp1.y*font.scale.y,
+            coords.start.x + cp2.x*font.scale.x,
+            coords.start.y + cp2.y*font.scale.y,
+            coords.start.x + coords.coords.x*font.scale.x,
+            coords.start.y + coords.coords.y*font.scale.y);
+        break;
+
+      case 's':
+        cp1 = {
+          x: coords.controlpoint.x,
+          y: coords.controlpoint.y
+        };
+
+        cp2 = {
+          x: coords.coords.x + c[1],
+          y: coords.coords.y + c[2]
+        };
+
+        coords.coords.x += c[3];
+        coords.coords.y += c[4];
+        coords.controlpoint.x = cp2.x;
+        coords.controlpoint.y = cp2.y;
 
         this.bezierCurveTo(
             coords.start.x + cp1.x*font.scale.x,
@@ -162,6 +204,10 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
         break;
 
       default:
+        if(cname.match(/[a-z]/i)) {
+          Subito.log('Unsupported path command: ' + cname, name, 'warn');
+        }
+
         break;
       }
     }
@@ -169,7 +215,7 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
     this.fill();
   };
   
-  canvas.getMetrics = function() {
+  canvas.getMetrics = function canvasGetMetrics() {
     return {
       width: this.canvas.getAttribute('width'),
       height: this.canvas.getAttribute('height')
@@ -177,13 +223,9 @@ SubitoRenderer.prototype.extendCanvas = function(canvas) {
   };
 };
 
-SubitoRenderer.prototype.renderScore = function(score) {
+SubitoRenderer.prototype.renderScore = function rendererRenderScore(score) {
   if(!(score instanceof SubitoScore)) {
     throw Subito.Exception('InvalidScore', 'The parameter isn\'t valid score');
-  }
-
-  if(typeof this.context.scale === 'function') {
-    this.context.scale(this.settings.scale, this.settings.scale);
   }
 
   score.render(this);
