@@ -45,6 +45,11 @@ should be well on your way to understand the code.
 There's also a standalone mode, which can be built by `jake build[standalone]`. This
 (should) render all scores embedded in the document.
 
+## Support
+
+Subito is supported in all modern browsers (supporting either SVG or Canvas),
+that being: Mozilla Firefox, Google Chrome, Opera, Safari and IE9+
+
 ## Can I help?
 
 You sure can! The rendering code needs a lot of love, but everything you can contribute

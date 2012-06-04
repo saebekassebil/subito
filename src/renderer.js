@@ -31,11 +31,15 @@ SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
   var self = this;
 
   canvas._exLineTo = function canvasLineTo(x, y) {
-    this.lineTo(x * self.settings.scale + 0.5, y * self.settings.scale + 0.5);
+    x = Math.round(x * self.settings.scale) + 0.5;
+    y = Math.round(y * self.settings.scale) + 0.5;
+    this.lineTo(x, y);
   };
 
   canvas._exMoveTo = function canvasMoveTo(x, y) {
-    this.moveTo(x * self.settings.scale + 0.5, y * self.settings.scale + 0.5);
+    x = Math.round(x * self.settings.scale) + 0.5;
+    y = Math.round(y * self.settings.scale) + 0.5;
+    this.moveTo(x, y);
   };
 
   canvas.renderGlyph = function canvasRenderGlyph(name, x, y) {
@@ -52,7 +56,6 @@ SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
       new SubitoGlyph(font.glyphs[name]);
 
     glyph.scale(self.settings.scale);
-    glyph.move(0.5, 0.5);
     var path = glyph.path, c, cname, cp1, cp2;
     var coords = {
         'start': {
