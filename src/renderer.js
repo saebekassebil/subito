@@ -252,7 +252,7 @@ SubitoRenderer.DefaultSettings = {
 
   beam: {
     slope: 0.22,
-    width: 3
+    width: 3.5
   },
 
   score: {

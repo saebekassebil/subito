@@ -81,7 +81,7 @@ SubitoNote.prototype = {
       }
     }
 
-    var direction = this.getStem(clef);
+    var direction = this.getStem(clef, false, true);
     var stemlength = this.g.stemlength || settings.note.stem;
 
     // Extend stem to touch middle line
@@ -169,13 +169,15 @@ SubitoNote.prototype = {
     }
   },
 
-  getStem: function noteGetStem(clef, ignoreBeam) {
+  getStem: function noteGetStem(clef, ignore, nocache) {
     var stem;
-    if(this.cache.stem) {
+    if(this.cache.stem && !nocache) {
       return this.cache.stem;
-    } if(this.g && this.g.stem) { // If a fixed stem is set
+    } else if(this.g && this.g.stem) { // If a fixed stem is set
       stem = this.g.stem;
-    } else if(!ignoreBeam && this.beams.length > 0) {
+    } else if (this.chord && !ignore) {
+      stem = this.chord.getStem(clef);
+    } else if(!ignore && this.beams.length > 0) {
       for(var i = 0, length = this.beams.length; i < length; i++) {
         if((stem = this.beams[i].getStem())) {
           break;
@@ -186,7 +188,7 @@ SubitoNote.prototype = {
     }
 
     if(stem) {
-      if(!ignoreBeam) {
+      if(!ignore && !nocache) {
         this.cache.stem = stem;
       }
 
@@ -199,7 +201,7 @@ SubitoNote.prototype = {
     pos = clef.c4 + pos/2;
     stem = (pos <= 2) ? 'down' : 'up';
 
-    if(!ignoreBeam) {
+    if(!ignore && !nocache) {
       this.cache.stem = stem;
     }
 
@@ -244,6 +246,14 @@ SubitoNote.prototype = {
     }
 
     this.voice = voice;
+  },
+
+  setChord: function noteSetChord(chord) {
+    if(!(chord instanceof SubitoChord)) {
+      throw new Subito.Exception('InvalidChord', 'Invalid chord as parameter');
+    }
+
+    this.chord = chord;
   },
 
   getDUnits: function noteGetDUnits() {

@@ -25,7 +25,7 @@
     <script src="../src/backends/svg.js"></script>
     
     <script>
-      window.addEventListener('load', function() {
+      window.addEventListener('load', function renderingScope() {
         var svg = document.getElementById('testsvg')
         var canvas = document.getElementById('testcanvas');
 
@@ -47,7 +47,10 @@
         var cnote1 = new SubitoNote('e4', 4);
         var cnote2 = new SubitoNote('g4', 4);
         var chord = new SubitoChord([note, cnote1, cnote2]);
-        var note2 = new SubitoNote('c6', 4);
+        var c2note1 = new SubitoNote('f4', 4);
+        var c2note2 = new SubitoNote('b4', 4);
+        var c2note3 = new SubitoNote('e5', 4);
+        var chord2 = new SubitoChord([c2note1, c2note2, c2note3]);
         var note3 = new SubitoNote('f5', 8);
         var note4 = new SubitoNote('c5', 8);
         var note5 = new SubitoNote('c5', 8);
@@ -70,7 +73,9 @@
         voice.addNote(note);
         voice.addNote(cnote1);
         voice.addNote(cnote2);
-        voice.addNote(note2);
+        voice.addNote(c2note1);
+        voice.addNote(c2note2);
+        voice.addNote(c2note3);
         voice.addNote(note3);
         voice.addNote(note4);
         voice.addNote(note5);
@@ -87,7 +92,7 @@
         voice.addNote(mnote9);
         voice.addNote(mnote10);
         measure.addContext(chord);
-        measure.addContext(note2);
+        measure.addContext(chord2);
         measure.addContext(note3);
         measure.addContext(note4);
         measure.addContext(note5);
@@ -125,16 +130,16 @@
         score.addContext(system);
         subitosvg.setScore(score);
 
-        //console.profile();
+        console.profile('SVG');
         var renderer = new SubitoRenderer(svg);
         renderer.renderScore(score);
-        //console.profileEnd()
+        console.profileEnd('SVG');
 
         subitocanvas.setScore(score);
-        //console.profile()
+        console.profile('CANVAS');
         renderer = new SubitoRenderer(canvas);
         renderer.renderScore(score);
-        //console.profileEnd();
+        console.profileEnd('CANVAS');
       }, false);
     </script>
 

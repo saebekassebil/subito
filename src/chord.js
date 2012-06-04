@@ -1,7 +1,12 @@
 function SubitoChord(notes) {
   this.notes = Subito._isArray(notes) ? notes : [];
+  for(var i = 0, n = this.notes.length; i < n; i++) {
+    this.notes[i].setChord(this);
+  }
+
   this.g = this.graphical = {};
   this.measure = null;
+  this.cache = {stem: null};
 }
 
 SubitoChord.prototype = {
@@ -10,7 +15,7 @@ SubitoChord.prototype = {
       throw new Subito.Exception('InvalidNote', 'Invalid parameters');
     }
 
-    //note.setChord(this);
+    note.setChord(this);
     this.notes.push(note);
   },
 
@@ -39,6 +44,27 @@ SubitoChord.prototype = {
       }
     } else {
       throw new Subito.Exception('InvalidMeasure', 'Invalid parameters');
+    }
+  },
+
+  getStem: function chordGetStem(clef, nocache) {
+    if(this.cache.stem && !nocache) {
+      return this.cache.stem;
+    }
+
+    clef = (clef instanceof SubitoClef) ? clef : this.measure.getClef();
+    var i, n, notes = this.notes, highest = 2, lowest = 2, pos;
+
+    for(var i = 0, n = notes.length; i < n; i++) {
+      pos = notes[i].getMetrics(clef).position;
+      highest = Math.min(highest, pos);
+      lowest = Math.max(lowest, pos);
+    }
+
+    if(Math.abs(highest - 2) >= Math.abs(lowest - 2)) { // Stem up
+      return (this.cache.stem = 'down');
+    } else {
+      return (this.cache.stem = 'up');
     }
   }
 };
