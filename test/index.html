@@ -13,6 +13,7 @@
     <script src="../src/clef.js"></script>
     <script src="../src/time.js"></script>
     <script src="../src/beam.js"></script>
+    <script src="../src/chord.js"></script>
     <script src="../src/voice.js"></script>
     <script src="../src/element.js"></script>
     <script src="../src/key.js"></script>
@@ -43,7 +44,10 @@
         var voice = new SubitoVoice();
         var clef = new SubitoClef('g');
         var note = new SubitoNote('c4', 4);
-        var note2 = new SubitoNote('e4', 4);
+        var cnote1 = new SubitoNote('e4', 4);
+        var cnote2 = new SubitoNote('g4', 4);
+        var chord = new SubitoChord([note, cnote1, cnote2]);
+        var note2 = new SubitoNote('c6', 4);
         var note3 = new SubitoNote('f5', 8);
         var note4 = new SubitoNote('c5', 8);
         var note5 = new SubitoNote('c5', 8);
@@ -58,12 +62,14 @@
         var mnote7 = new SubitoNote('b2', 16);
         var mnote8 = new SubitoNote('f3', 16);
         var mnote9 = new SubitoNote('g3', 8);
-        var mnote10 = new SubitoNote('a1', 8);
+        var mnote10 = new SubitoNote('c2', 8);
 
         var xnote1 = new SubitoNote('c4', 1);
 
         var beam = new SubitoBeam([note3, note4, note5, note6]);
         voice.addNote(note);
+        voice.addNote(cnote1);
+        voice.addNote(cnote2);
         voice.addNote(note2);
         voice.addNote(note3);
         voice.addNote(note4);
@@ -80,7 +86,7 @@
         voice.addNote(mnote8);
         voice.addNote(mnote9);
         voice.addNote(mnote10);
-        measure.addContext(note);
+        measure.addContext(chord);
         measure.addContext(note2);
         measure.addContext(note3);
         measure.addContext(note4);

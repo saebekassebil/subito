@@ -14,15 +14,13 @@ function SubitoMeasure(contexts) {
 SubitoMeasure.prototype = {
   addContext: function measureAddContext(context) {
     if(!(context instanceof SubitoNote) &&
-        !(context instanceof SubitoElement)) {
+        !(context instanceof SubitoElement) &&
+        !(context instanceof SubitoChord)) {
       throw new Subito.Exception('InvalidContext',
           'SubitoMeasure only accepts ' +
-          'SubitoNote and SubitoElements as child contexts');
+          'SubitoNote, SubitoChord and SubitoElements as child contexts');
     } else {
-      if(context instanceof SubitoNote) {
-        context.setMeasure(this);
-      }
-
+      context.setMeasure(this);
       this.contexts.push(context);
     }
   },
@@ -160,28 +158,15 @@ SubitoMeasure.prototype = {
       context = this.contexts[i];
       if(context instanceof SubitoNote) {
         context.render(renderer);
-        //shift = metric.rwidth/context.tnote.duration;
         shift = (metric.rwidth/time.count) / (context.tnote.duration/time.unit);
+        this.g.pen.x += shift;
+      } else if(context instanceof SubitoChord) {
+        context.render(renderer);
+        shift = (metric.rwidth/time.count) /
+          (context.notes[0].tnote.duration/time.unit);
         this.g.pen.x += shift;
       }
     }
-
-    // Render BBox
-    /*
-    var bboxx = this.stave.g.pen.x, bboxy = this.stave.g.pen.y;
-    ctx.save();
-    ctx.fillStyle = '#0099FF';
-    ctx.globalAlpha = 0.5;
-
-    ctx.beginPath();
-    ctx.moveTo(bboxx, bboxy + y);
-    ctx.lineTo(bboxx, bboxy);
-    ctx.lineTo(bboxx + metric.width, bboxy);
-    ctx.lineTo(bboxx + metric.width, bboxy + y);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-    */
   },
 
   getKey: function measureGetKey() {

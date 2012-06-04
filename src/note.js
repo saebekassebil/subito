@@ -20,9 +20,10 @@ SubitoNote.prototype = {
     var headwidth = font.glyphs[head].hoz * font.scale.x;
     var clef = this.measure.getClef();
     var yshift = this.measure.g.pen.y;
+    var settings = renderer.settings;
     var lpos, lx, ly, i, length, stemx, ls, pos, y;
 
-    ls = renderer.settings.measure.linespan;
+    ls = settings.measure.linespan;
     pos = Subito.C4 - this.tnote.key(true);
     pos = clef.c4 + pos/2;
     y = ls*pos;
@@ -81,7 +82,14 @@ SubitoNote.prototype = {
     }
 
     var direction = this.getStem(clef);
-    var stemlength = this.g.stemlength || renderer.settings.note.stem;
+    var stemlength = this.g.stemlength || settings.note.stem;
+
+    // Extend stem to touch middle line
+    if(direction === 'up' && pos >= 6 && !this.g.stemLength) {
+      stemlength += (pos + 0.5 - 6) * ls + settings.measure.linewidth/2;
+    } else if(direction === 'down' && pos < -1 && !this.g.stemlength) {
+      stemlength += Math.abs(pos + 1 + 0.5) * ls + settings.measure.linewidth/2;
+    }
 
     // Render flag if any
     if(this.tnote.duration >= 8 && this.beams.length === 0) {
@@ -93,7 +101,7 @@ SubitoNote.prototype = {
         flagx += headwidth;
         flagy = flagy + (y - stemlength);
       } else {
-        flagx += renderer.settings.note.stemwidth;
+        flagx += settings.note.stemwidth;
         flagy = flagy + (y + stemlength);
       }
 

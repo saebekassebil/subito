@@ -93,6 +93,7 @@ Subito._isArray = function(element) {
 //=include note.js
 //=include clef.js
 //=include time.js
+//=include chord.js
 //=include glyph.js
 //=include graphicsystemline.js
 //=include graphicstaveline.js

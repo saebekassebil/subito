@@ -12,6 +12,7 @@
     "SubitoClef",
     "SubitoTime",
     "SubitoBeam",
+    "SubitoChord",
     "SubitoSVGContext",
     "SubitoRenderer",
     "SubitoVoice",
