@@ -2,7 +2,7 @@ function SubitoGlyph(glyph) {
   this.glyph = glyph;
   this.rawpath = glyph.path.replace(/(\d|^)?([mlhvcsqtaz])(\d|$)?/ig,
                                     '$1 $2 $3');
-  var bits = this.rawpath.split(/\s+/), bit, num, index, path = [];
+  var bits = this.rawpath.split(' '), bit, num, index, path = [];
 
   // Compile string-path to array-format
   for(var i = 0, length = bits.length; i < length; i++) {
@@ -25,11 +25,11 @@ function SubitoGlyph(glyph) {
 SubitoGlyph.prototype = {
   scale: function glyphScale(scalex, scaley) {
     scaley = scaley || scalex;
-    var path = this.path, c, name;
-    for(var i = 0, length = path.length; i < length; i++) {
+    var path = this.path, c, name, i, length, ii, n;
+    for(i = 0, length = path.length; i < length; i++) {
       c = path[i];
       name = c[0];
-      for(var ii = 1, n = c.length; ii < n; ii++) {
+      for(ii = 1, n = c.length; ii < n; ii++) {
         if(name === 'H' || name === 'h') {
           path[i][ii] = path[i][ii] * scalex;
         } else if(name === 'V' || name === 'v') {
@@ -47,12 +47,12 @@ SubitoGlyph.prototype = {
   },
 
   move: function glyphMove(x, y) {
-    var path = this.path, c, name;
-    for(var i = 0, length = path.length; i < length; i++) {
+    var path = this.path, c, name, i, length, ii, n;
+    for(i = 0, length = path.length; i < length; i++) {
       c = path[i];
       name = c[0];
       if(name === name.toUpperCase()) {
-        for(var ii = 1, n = c.length; ii < n; ii++) {
+        for(ii = 1, n = c.length; ii < n; ii++) {
           if(name === 'H' || name === 'h') {
             path[i][ii] = path[i][ii] + x;
           } else if(name === 'V' || name === 'v') {

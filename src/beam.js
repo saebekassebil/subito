@@ -81,112 +81,48 @@ SubitoBeam.prototype = {
     // Render beam
     var fnote = notes[0].g, lnote = notes[notes.length-1].g;
     var yshift = beamNumber * (beamwidth * 1.5);
-    var first, last;
+    var ftx, fty, fby, ltx, lty, lby;
     if (beamNumber > 0) {
       if (stem === 'up') {
-        first = {
-          top: {
-            x: fnote.x + headwidth - stemwidth,
-            y: fnote.y - fnote.stemlength - (beamwidth / 2) - 0.5 + yshift
-          },
+        ftx = fnote.x + headwidth - stemwidth;
+        fty = fnote.y - fnote.stemlength - (beamwidth / 2) + yshift - 0.5;
+        fby = fnote.y - fnote.stemlength + (beamwidth / 2) + yshift - 0.5;
 
-          bottom: {
-            x: fnote.x + headwidth - stemwidth,
-            y: fnote.y - fnote.stemlength + beamwidth / 2 - 0.5+ yshift
-          }
-        };
-
-        last = {
-          top: {
-            x: lnote.x + headwidth,
-            y: first.top.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
-          },
-
-          bottom: {
-            x: lnote.x + headwidth,
-            y: first.bottom.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
-          }
-        };
+        ltx = lnote.x + headwidth;
+        lty = fty + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
+        lby = fby + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
       } else {
-        first = {
-          top: {
-            x: fnote.x - stemwidth / 2,
-            y: fnote.y + fnote.stemlength - (beamwidth / 2) - yshift
-          },
+        ftx = fnote.x - stemwidth / 2;
+        fty = fnote.y + fnote.stemlength - (beamwidth / 2) - yshift;
+        fby = fnote.y + fnote.stemlength + (beamwidth / 2) - yshift;
 
-          bottom: {
-            x: fnote.x - stemwidth / 2,
-            y: fnote.y + fnote.stemlength + beamwidth / 2 - yshift
-          }
-        };
-
-        last = {
-          top: {
-            x: lnote.x + stemwidth / 2,
-            y: first.top.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
-          },
-
-          bottom: {
-            x: lnote.x + stemwidth / 2,
-            y: first.bottom.y + (lnote.x - fnote.x + stemwidth * 2) * maxslope
-          }
-        };
+        ltx = lnote.x + stemwidth / 2;
+        lty = fty + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
+        lby = fby + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
       }
     } else if (stem === 'up') {
-      first = {
-        top: {
-          x: fnote.x + headwidth - stemwidth,
-          y: fnote.y - (beamwidth / 2) - fnote.stemlength
-        },
-
-        bottom: {
-          x: fnote.x + headwidth - stemwidth,
-          y: fnote.y + beamwidth / 2 - fnote.stemlength
-        }
-      };
-
-      last = {
-        top: {
-          x: lnote.x + headwidth,
-          y: lnote.y - (beamwidth - 2) - lnote.stemlength
-        },
-
-        bottom: {
-          x: lnote.x + headwidth,
-          y: lnote.y + 2 - lnote.stemlength
-        }
-      };
+      ftx = fnote.x + headwidth - stemwidth;
+      fty = fnote.y - (beamwidth / 2) - fnote.stemlength;
+      fby = fnote.y + (beamwidth / 2) - fnote.stemlength;
+      
+      ltx = lnote.x + headwidth;
+      lty = lnote.y - (beamwidth - 2) - lnote.stemlength;
+      lby = lnote.y + 2 - lnote.stemlength;
     } else {
-      first = {
-        top: {
-          x: fnote.x - stemwidth/2,
-          y: fnote.y + fnote.stemlength - (beamwidth - 1)
-        },
+      ftx = fnote.x - stemwidth / 2;
+      fty = fnote.y + fnote.stemlength - (beamwidth - 1);
+      fby = fnote.y + fnote.stemlength + 1;
 
-        bottom: {
-          x: fnote.x - stemwidth/2,
-          y: fnote.y + fnote.stemlength + 1
-        }
-      };
-
-      last = {
-        top: {
-          x: lnote.x + stemwidth / 2,
-          y: lnote.y + lnote.stemlength - (beamwidth - 1)
-        },
-
-        bottom: {
-          x: lnote.x + stemwidth / 2,
-          y: lnote.y + lnote.stemlength + 1
-        }
-      };
+      ltx = lnote.x + stemwidth / 2;
+      lty = lnote.y + lnote.stemlength - (beamwidth - 1);
+      lby = lnote.y + lnote.stemlength + 1;
     }
 
     ctx.beginPath();
-    ctx._exMoveTo(first.top.x, first.top.y);
-    ctx._exLineTo(first.bottom.x, first.bottom.y);
-    ctx._exLineTo(last.bottom.x, last.bottom.y);
-    ctx._exLineTo(last.top.x, last.top.y);
+    ctx._exMoveTo(ftx, fty);
+    ctx._exLineTo(ftx, fby);
+    ctx._exLineTo(ltx, lby);
+    ctx._exLineTo(ltx, lty);
     ctx.closePath();
     ctx.fill();
 

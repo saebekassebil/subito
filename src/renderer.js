@@ -29,177 +29,128 @@ function SubitoRenderer(canvas, settings) {
 
 SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
   var self = this;
+  var scale = this.settings.scale;
+  var round = Math.round;
+  var font = this.font;
 
   canvas._exLineTo = function canvasLineTo(x, y) {
-    x = Math.round(x * self.settings.scale) + 0.5;
-    y = Math.round(y * self.settings.scale) + 0.5;
+    x = round(x * scale) + 0.5;
+    y = round(y * scale) + 0.5;
     this.lineTo(x, y);
   };
 
   canvas._exMoveTo = function canvasMoveTo(x, y) {
-    x = Math.round(x * self.settings.scale) + 0.5;
-    y = Math.round(y * self.settings.scale) + 0.5;
+    x = round(x * scale) + 0.5;
+    y = round(y * scale) + 0.5;
     this.moveTo(x, y);
   };
 
   canvas.renderGlyph = function canvasRenderGlyph(name, x, y) {
-    var font = self.font;
-
-    x = x * self.settings.scale;
-    y = y * self.settings.scale;
     if(!(name instanceof SubitoGlyph) && !font.glyphs[name]) {
       return Subito.log('Unsupported Glyph: ' + name , 'warn');
     }
 
+    x = x * scale;
+    y = y * scale;
 
     var glyph = (name instanceof SubitoGlyph) ? name :
       new SubitoGlyph(font.glyphs[name]);
 
-    glyph.scale(self.settings.scale);
-    var path = glyph.path, c, cname, cp1, cp2;
-    var coords = {
-        'start': {
-          'x': x,
-          'y': y
-        },
+    var path = glyph.path, c, cname, startx = x, starty = y, px = 0, py = 0,
+        controlpx, controlpy;
 
-        'coords': {
-          'x': 0,
-          'y': 0
-        },
-
-        'controlpoint': {
-          'x': null,
-          'y': null
-        }
-    };
-
-    this.fillStyle = self.settings.fillcolor;
+    glyph.scale(scale * font.scale.x, scale * font.scale.y);
 
     this.beginPath();
     for(var i = 0, length = path.length; i < length; i++) {
       c = path[i];
-      cname = path[i][0];
+      cname = c[0];
       switch(cname) {
       case 'M':
-        coords.coords.x = c[1];
-        coords.coords.y = c[2];
+        px = c[1];
+        py = c[2];
 
-        this.moveTo(coords.start.x + (coords.coords.x*font.scale.x),
-                    coords.start.y + (coords.coords.y*font.scale.y));
-
+        this.moveTo(startx + px, starty + py);
         break;
 
       case 'l':
-        coords.coords.x += c[1];
-        coords.coords.y += c[2];
+        px += c[1];
+        py += c[2];
 
-        this.lineTo(coords.start.x + (coords.coords.x*font.scale.x),
-                    coords.start.y + (coords.coords.y*font.scale.y));
-
+        this.lineTo(startx + px, starty + py);
         break;
 
       case 'h':
-        coords.coords.x += c[1];
+        px += c[1];
 
-        this.lineTo(coords.start.x + (coords.coords.x*font.scale.x),
-                    coords.start.y + (coords.coords.y*font.scale.y));
-
+        this.lineTo(startx + px, starty + py);
         break;
 
       case 'v':
-        coords.coords.y += c[1];
+        py += c[1];
 
-        this.lineTo(coords.start.x + (coords.coords.x*font.scale.x),
-                    coords.start.y + (coords.coords.y*font.scale.y));
-
+        this.lineTo(startx + px, starty + py);
         break;
 
       case 'q':
-        coords.controlpoint.x = coords.coords.x + c[1];
-        coords.controlpoint.y = coords.coords.y + c[2];
+        controlpx = px + c[1];
+        controlpy = py + c[2];
 
-        coords.coords.x += c[3];
-        coords.coords.y += c[4];
+        px += c[3];
+        py += c[4];
 
         this.quadraticCurveTo(
-            coords.start.x + (coords.controlpoint.x*font.scale.x),
-            coords.start.y + (coords.controlpoint.y*font.scale.y),
-            coords.start.x + (coords.coords.x*font.scale.x),
-            coords.start.y + (coords.coords.y*font.scale.y));
-      
+            startx + controlpx,
+            starty + controlpy,
+            startx + px,
+            starty + py);
         break;
 
       case 't':
-        if(coords.controlpoint.x === null || coords.controlpoint.y === null) {
-          return;
-        }
+        controlpx = px + (px - controlpx);
+        controlpy = py + (py - controlpy);
 
-        coords.controlpoint.x = coords.coords.x +
-            (coords.coords.x - coords.controlpoint.x);
-        coords.controlpoint.y = coords.coords.y +
-            (coords.coords.y - coords.controlpoint.y);
-
-        coords.coords.x += c[1];
-        coords.coords.y += c[2];
+        px += c[1];
+        py += c[2];
 
         this.quadraticCurveTo(
-            coords.start.x + (coords.controlpoint.x*font.scale.x),
-            coords.start.y + (coords.controlpoint.y*font.scale.y),
-            coords.start.x + (coords.coords.x*font.scale.x),
-            coords.start.y + (coords.coords.y*font.scale.y));
-
+            startx + controlpx,
+            starty + controlpy,
+            startx + px,
+            starty + py);
         break;
 
       case 'c':
-        cp1 = {
-          x: coords.coords.x + c[1],
-          y: coords.coords.y + c[2]
-        };
-
-        cp2 = {
-          x: coords.coords.x + c[3],
-          y: coords.coords.y + c[4]
-        };
-
-        coords.controlpoint.x = cp2.x;
-        coords.controlpoint.y = cp2.y;
+        controlpx = px + c[3];
+        controlpy = py + c[4];
         
-        coords.coords.x += c[5];
-        coords.coords.y += c[6];
 
         this.bezierCurveTo(
-            coords.start.x + cp1.x*font.scale.x,
-            coords.start.y + cp1.y*font.scale.y,
-            coords.start.x + cp2.x*font.scale.x,
-            coords.start.y + cp2.y*font.scale.y,
-            coords.start.x + coords.coords.x*font.scale.x,
-            coords.start.y + coords.coords.y*font.scale.y);
+            startx + px + c[1],
+            starty + py + c[2],
+            startx + controlpx,
+            starty + controlpy,
+            startx + px + c[5],
+            starty + py + c[6]);
+
+          px += c[5];
+          py += c[6];
         break;
 
       case 's':
-        cp1 = {
-          x: coords.controlpoint.x,
-          y: coords.controlpoint.y
-        };
-
-        cp2 = {
-          x: coords.coords.x + c[1],
-          y: coords.coords.y + c[2]
-        };
-
-        coords.coords.x += c[3];
-        coords.coords.y += c[4];
-        coords.controlpoint.x = cp2.x;
-        coords.controlpoint.y = cp2.y;
-
         this.bezierCurveTo(
-            coords.start.x + cp1.x*font.scale.x,
-            coords.start.y + cp1.y*font.scale.y,
-            coords.start.x + cp2.x*font.scale.x,
-            coords.start.y + cp2.y*font.scale.y,
-            coords.start.x + coords.coords.x*font.scale.x,
-            coords.start.y + coords.coords.y*font.scale.y);
+            startx + controlpx,
+            starty + controlpy,
+            startx + px + c[1],
+            starty + py + c[2],
+            startx + px + c[3],
+            starty + py + c[4]);
+
+        px += c[3];
+        py += c[4];
+
+        controlpx = px + c[1];
+        controlpy = py + c[2];
         break;
 
       case 'z':
@@ -214,6 +165,7 @@ SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
         break;
       }
     }
+
     this.fillStyle = self.settings.fillcolor;
     this.fill();
   };
