@@ -18,18 +18,18 @@ function SubitoTime(count, unit, forceNumbers) {
 SubitoTime.prototype = {
   render: function timeRender(renderer, x, y) {
     var ctx = renderer.context;
-    if(this.count === this.unit && this.unit === 2 &&
-        !this.forceNumbers) {
+    var count = this.count, unit = this.unit;
+    if(count === unit && unit === 2 && !this.forceNumbers) {
       // Render half-circle
       ctx.renderGlyph('timesig.C22', x, y);
-    } else if(this.count === this.unit && this.unit === 4 &&
-        !this.forceNumbers) {
+    } else if(count === unit && unit === 4 && !this.forceNumbers) {
       // Render whole-circle
       ctx.renderGlyph('timesig.C44', x, y);
     } else {
       // Render number fraction
-      var count = this.count.toString(), unit = this.unit.toString(),
-          i, length, shift = 0, name,
+      count = count.toString();
+      unit = unit.toString();
+      var i, length, shift = 0, name,
           numwidth = renderer.font.glyphs.one.hoz * renderer.font.scale.x;
 
       if(unit.length > count.length) {

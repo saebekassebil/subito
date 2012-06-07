@@ -131,14 +131,14 @@
         subitosvg.setScore(score);
 
         console.profile('SVG');
-        var renderer = new SubitoRenderer(svg);
-        renderer.renderScore(score);
+        subitosvg.render();
         console.profileEnd('SVG');
 
+        console.log(' ');
+        console.log('Canvas:');
         subitocanvas.setScore(score);
         console.profile('CANVAS');
-        renderer = new SubitoRenderer(canvas);
-        renderer.renderScore(score);
+        subitocanvas.render();
         console.profileEnd('CANVAS');
       }, false);
     </script>

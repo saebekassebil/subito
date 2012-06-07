@@ -32,6 +32,7 @@ SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
   var scale = this.settings.scale;
   var round = Math.round;
   var font = this.font;
+  var glyphCache = {};
 
   canvas._exLineTo = function canvasLineTo(x, y) {
     x = round(x * scale) + 0.5;
@@ -45,7 +46,7 @@ SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
     this.moveTo(x, y);
   };
 
-  canvas.renderGlyph = function canvasRenderGlyph(name, x, y) {
+  canvas.renderGlyph = function canvasRenderGlyph(name, x, y, nocache) {
     if(!(name instanceof SubitoGlyph) && !font.glyphs[name]) {
       return Subito.log('Unsupported Glyph: ' + name , 'warn');
     }
@@ -53,19 +54,31 @@ SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
     x = x * scale;
     y = y * scale;
 
-    var glyph = (name instanceof SubitoGlyph) ? name :
-      new SubitoGlyph(font.glyphs[name]);
+    var glyph, path, c, startx, starty, px, py, controlpx, controlpy;
 
-    var path = glyph.path, c, cname, startx = x, starty = y, px = 0, py = 0,
-        controlpx, controlpy;
+    if(typeof name === 'string' && name in glyphCache && !nocache) {
+      glyph = glyphCache[name];
+    } else {
+      glyph = (name instanceof SubitoGlyph) ? name :
+        new SubitoGlyph(font.glyphs[name]);
+      glyph.scale(scale * font.scale.x, scale * font.scale.y);
 
-    glyph.scale(scale * font.scale.x, scale * font.scale.y);
+      if(typeof name === 'string') {
+        glyphCache[name] = glyph;
+      }
+    }
+
+    path = glyph.path;
+    startx = x;
+    starty = y;
+    px = 0;
+    py = 0;
+
 
     this.beginPath();
     for(var i = 0, length = path.length; i < length; i++) {
       c = path[i];
-      cname = c[0];
-      switch(cname) {
+      switch(c[0]) {
       case 'M':
         px = c[1];
         py = c[2];
@@ -158,8 +171,8 @@ SubitoRenderer.prototype.extendCanvas = function rendererExtendCanvas(canvas) {
         break;
 
       default:
-        if(cname.match(/[a-z]/i)) {
-          Subito.log('Unsupported path command: ' + cname, name, 'warn');
+        if(c[0].match(/[a-z]/i)) {
+          Subito.log('Unsupported path command: ' + c[0], name, 'warn');
         }
 
         break;

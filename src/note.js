@@ -55,11 +55,11 @@ SubitoNote.prototype = {
     ctx.renderGlyph(head, this.g.x, yshift + y);
 
     // Render ledger lines if any
+    lx = this.g.x;
     if(pos >= 5) {
       lpos = Math.floor(pos);
       for(i = 0, length = lpos - 4; i < length; i++) {
-        lx = this.g.x;
-        ly = ls*(5+i) + yshift;
+        ly = ls * (5 + i) + yshift;
 
         ctx.beginPath();
         ctx._exMoveTo(lx - headwidth/2, ly);
@@ -70,8 +70,7 @@ SubitoNote.prototype = {
     } else if(pos <= -1) {
       lpos = Math.ceil(pos);
       for(i = 0, length = 0 - lpos; i < length; i++) {
-        lx = this.g.x;
-        ly = -ls*(i+1) + yshift;
+        ly = -ls * (i + 1) + yshift;
 
         ctx.beginPath();
         ctx._exMoveTo(lx - headwidth/2, ly);
