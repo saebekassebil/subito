@@ -91,6 +91,7 @@ Subito._isArray = function(element) {
 //=include beam.js
 //=include measure.js
 //=include note.js
+//=include key.js
 //=include clef.js
 //=include time.js
 //=include chord.js

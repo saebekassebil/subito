@@ -4,7 +4,14 @@ function SubitoStave(contexts) {
   this.g.pen = {x: 0, y: 0};
 
   this.key = null;
-  this.time = null;
+
+  // If this is the first bar, and the stave haven't been assigned
+  // any time, then use the one from the bar
+  if(this.contexts.length < 0 && this.contexts[0].time) {
+    this.time = this.contexts[0].time;
+  } else {
+    this.time = null;
+  }
 }
 
 SubitoStave.prototype = {
@@ -17,6 +24,12 @@ SubitoStave.prototype = {
     } else {
       if(context instanceof SubitoMeasure) {
         context.setStave(this);
+
+        // If this is the first bar, and the stave haven't been assigned
+        // any time, then use the one from the bar
+        if(!this.time && this.contexts.length === 0 && context.time) {
+          this.time = context.time;
+        }
       }
 
       this.contexts.push(context);

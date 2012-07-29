@@ -1,6 +1,5 @@
 /**
- * A truly naive and half-hearted implementation
- * But works for the most basics
+ * A most basic MusicJSON parser
  **/
 Subito.Parsers.MusicJSON = (function() {
   function constructor(source) {
@@ -9,9 +8,37 @@ Subito.Parsers.MusicJSON = (function() {
 
   function parseMeasure(measure) {
     var subitoMeasure = new SubitoMeasure(), subitoNote, note,
-        notes = [], beam, tryBeam = false, name;
-    if(Object.prototype.toString.call(measure.note) === '[object Array]') {
-      for(var i = 0, length = measure.note.length; i < length; i++) {
+        notes = [], beam, tryBeam = false, name, key, clef, time, i, subitoClef;
+
+    if (measure.attributes) {
+      // Time
+      if ((time = measure.attributes.time)) {
+        subitoMeasure.setTime({
+          beats: time.beats,
+          unit: time['beat-type']
+        });
+      }
+
+      // Key
+      if ((key = measure.attributes.key)) {
+        key = parseInt(key.fifths);
+        for(var akey in SubitoKey.Keys) {
+          if(SubitoKey.Keys[akey] === key) {
+            subitoMeasure.setKey(new SubitoKey(akey));
+          }
+        }
+      }
+
+      // Clef
+      if ((clef = measure.attributes.clef)) {
+        subitoClef = new SubitoClef(clef.sign.toLowerCase());
+        subitoClef.line = 3 - (parseInt(clef.line) - 2); // Different ways of counting
+        subitoMeasure.setClef(subitoClef);
+      }
+    }
+
+    if (Object.prototype.toString.call(measure.note) === '[object Array]') {
+      for(i = 0, length = measure.note.length; i < length; i++) {
         note = measure.note[i];
 
         name = note.pitch.step + note.pitch.octave;
@@ -51,6 +78,10 @@ Subito.Parsers.MusicJSON = (function() {
 
       var source = this.source;
       var score = source['score-partwise'];
+      if (!score) {
+        throw new Error('Invalid MusicJSON file');
+      }
+
       var part = score.part;
       var measures = part.measure;
 

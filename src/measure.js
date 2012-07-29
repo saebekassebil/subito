@@ -169,6 +169,15 @@ SubitoMeasure.prototype = {
     }
   },
 
+  setKey: function measureSetKey(key) {
+    if(key instanceof SubitoKey) {
+      key.setParent(this);
+      this.key = key;
+    } else {
+      throw new Subito.Exception('InvalidKey', 'An invalid key element');
+    }
+  },
+
   getKey: function measureGetKey() {
     if(this.key instanceof SubitoKey) {
       return this.key;
@@ -176,6 +185,16 @@ SubitoMeasure.prototype = {
       return this.stave.getKey();
     } else {
       return null;
+    }
+  },
+
+  setTime: function measureSetTime(time) {
+    if(time instanceof SubitoTime) {
+      this.time = time;
+    } else if(time.beats && time.unit) {
+      this.time = new SubitoTime(time.beats, time.unit);
+    } else {
+      throw new Subito.Exception('InvalidTime', 'An invalid time element');
     }
   },
 
@@ -191,7 +210,7 @@ SubitoMeasure.prototype = {
 
   setClef: function measureSetClef(clef) {
     if(!(clef instanceof SubitoClef)) {
-      throw new Subito.Eception('InvalidClef', 'An invalid clef was passed');
+      throw new Subito.Exception('InvalidClef', 'An invalid clef was passed');
     }
 
     this.clef = clef;
