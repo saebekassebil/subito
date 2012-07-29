@@ -37,7 +37,7 @@ SubitoMeasure.prototype = {
 
       for(var i = 0, length = this.contexts.length; i < length; i++) {
         if(this.contexts[i] instanceof SubitoNote) {
-          var metric = this.contexts[i].getMetrics();
+          var metric = this.contexts[i].getMetrics(renderer);
           var stem = this.contexts[i].getStem(clef);
           var notey = metric.position * defaults.measure.linespan +
                 (stem === 'up' ? -1 : 0) *
@@ -76,7 +76,7 @@ SubitoMeasure.prototype = {
   render: function measureRender(renderer) {
     var ctx = renderer.context;
     var flags = renderer.flags;
-    var metric = this.getMetrics();
+    var metric = this.getMetrics(renderer);
     var xshift = this.stave.g.pen.x;
     var yshift = this.stave.g.pen.y;
     var y, time;
@@ -159,7 +159,7 @@ SubitoMeasure.prototype = {
       if(context instanceof SubitoNote) {
         context.render(renderer);
         shift = (metric.rwidth/time.count) / (context.tnote.duration/time.unit);
-        this.g.pen.x += shift;
+        this.g.pen.x += Math.max(shift, context.getMetrics(renderer).headwidth);
       } else if(context instanceof SubitoChord) {
         context.render(renderer);
         shift = (metric.rwidth/time.count) /

@@ -56,7 +56,7 @@ SubitoChord.prototype = {
     var i, n, notes = this.notes, highest = 2, lowest = 2, pos;
 
     for(i = 0, n = notes.length; i < n; i++) {
-      pos = notes[i].getMetrics(clef).position;
+      pos = notes[i].getMetrics().position;
       highest = Math.min(highest, pos);
       lowest = Math.max(lowest, pos);
     }

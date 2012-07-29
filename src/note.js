@@ -21,14 +21,14 @@ SubitoNote.prototype = {
     var clef = this.measure.getClef();
     var yshift = this.measure.g.pen.y;
     var settings = renderer.settings;
-    var lpos, lx, ly, i, length, stemx, ls, pos, y;
+    var lpos, lx, ly, i, length, stemx, ls, pos, y, gx, gy;
 
     ls = settings.measure.linespan;
     pos = Subito.C4 - this.tnote.key(true);
     pos = clef.c4 + pos/2;
     y = ls*pos;
-    this.g.x = this.measure.g.pen.x;
-    this.g.y = yshift + y;
+    gx = this.measure.g.pen.x;
+    gy = yshift + y;
 
     // Render Accidentals if any
     var accidental = this.tnote.accidental;
@@ -44,18 +44,17 @@ SubitoNote.prototype = {
         accidentalHead = 'accidentals.flatflat';
       }
 
-      var width = renderer.font.glyphs[accidentalHead].hoz *
-        renderer.font.scale.x * 1.5;
+      var width = font.glyphs[accidentalHead].hoz * font.scale.x * 1.5;
 
-      this.g.x += width;
-      ctx.renderGlyph(accidentalHead, this.g.x - width, yshift + y);
+      gx = Math.round(gx + width);
+      ctx.renderGlyph(accidentalHead, gx - width, yshift + y);
     }
 
     // Render head
-    ctx.renderGlyph(head, this.g.x, yshift + y);
+    ctx.renderGlyph(head, gx, yshift + y);
 
     // Render ledger lines if any
-    lx = this.g.x;
+    lx = gx;
     if(pos >= 5) {
       lpos = Math.floor(pos);
       for(i = 0, length = lpos - 4; i < length; i++) {
@@ -93,7 +92,7 @@ SubitoNote.prototype = {
     // Render flag if any
     if(this.tnote.duration >= 8 && this.beams.length === 0) {
       var flag = this.getFlagGlyphName();
-      var flagx = this.g.x;
+      var flagx = gx;
       var flagy = yshift;
 
       if(direction === 'up') {
@@ -106,6 +105,8 @@ SubitoNote.prototype = {
 
       ctx.renderGlyph(flag, flagx, flagy);
     } else if(this.beams.length > 0) { // Render beams
+      this.g.x = gx;
+      this.g.y = gy;
       for(i = 0, length = this.beams.length-1; i < length; i++) {
         this.beams[i].setNextBeam(this.beams[i+1]);
         this.beams[i+1].setPreviousBeam(this.beams[i]);
@@ -118,7 +119,7 @@ SubitoNote.prototype = {
     // Render stem if any
     if(this.tnote.duration >= 2) {
       if(direction === 'up') {
-        stemx = this.g.x +
+        stemx = gx +
           font.glyphs[head].hoz * font.scale.x - 0.5;
 
         ctx.beginPath();
@@ -127,7 +128,7 @@ SubitoNote.prototype = {
         ctx.closePath();
         ctx.stroke();
       } else {
-        stemx = this.g.x;
+        stemx = gx;
         ctx.beginPath();
         ctx._exMoveTo(stemx, yshift + y);
         ctx._exLineTo(stemx, yshift + y+stemlength);
@@ -137,6 +138,8 @@ SubitoNote.prototype = {
     }
 
     this.g.rendered = true;
+    this.g.x = gx;
+    this.g.y = gy;
   },
 
   getHeadGlyphName: function noteGetHeadGlyphName() {
@@ -207,16 +210,23 @@ SubitoNote.prototype = {
     return stem;
   },
 
-  getMetrics: function noteGetMetrics() {
-    if(this.cache.metrics) {
+  getMetrics: function noteGetMetrics(renderer) {
+    if(this.cache.metrics && !(renderer && !this.cache.metrics.headwidth)) {
       return this.cache.metrics;
     }
+    var pos, headwidth;
 
-    var pos = Subito.C4 - this.tnote.key(true);
+    pos = Subito.C4 - this.tnote.key(true);
     pos = this.measure.getClef().c4 + pos/2;
 
+    if(renderer) {
+      headwidth = renderer.font.glyphs[this.getHeadGlyphName()].hoz *
+        renderer.font.scale.x;
+    }
+
     var metric = {
-      position: pos
+      position: pos,
+      headwidth: headwidth
     };
 
     return (this.cache.metrics = metric);

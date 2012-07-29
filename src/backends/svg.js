@@ -9,8 +9,6 @@ var SubitoSVGContext = (function() {
 
     this.lineWidth = 1;
     this.globalAlpha = 1.0;
-    this.strokeStyle = '#000000';
-    this.fillColor = '#000000';
     
     this.state = {
       scale: {x: 1, y: 1}
@@ -155,6 +153,8 @@ var SubitoSVGContext = (function() {
 
       var path = create('path');
       path.setAttribute('d', glyph.getPath());
+      path.setAttribute('fill', this.fillStyle ||
+          this.renderer.settings.fillcolor);
       this.context.appendChild(path);
     },
     

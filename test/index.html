@@ -130,16 +130,14 @@
         score.addContext(system);
         subitosvg.setScore(score);
 
-        console.profile('SVG');
+        //console.profile('SVG');
         subitosvg.render();
-        console.profileEnd('SVG');
+        //console.profileEnd('SVG');
 
-        console.log(' ');
-        console.log('Canvas:');
         subitocanvas.setScore(score);
-        console.profile('CANVAS');
+       // console.profile('Canvas');
         subitocanvas.render();
-        console.profileEnd('CANVAS');
+       // console.profileEnd('Canvas');
       }, false);
     </script>
 

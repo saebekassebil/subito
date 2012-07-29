@@ -1,15 +1,13 @@
 function SubitoGlyph(glyph) {
   this.glyph = glyph;
-  this.rawpath = glyph.path.replace(/(\d|^)?([mlhvcsqtaz])(\d|$)?/ig,
+  this.rawpath = glyph.path.replace(/(\d)?([mlhvcsqtaz])(\d)?/ig,
                                     '$1 $2 $3');
   var bits = this.rawpath.split(' '), bit, num, index, path = [];
 
   // Compile string-path to array-format
   for(var i = 0, length = bits.length; i < length; i++) {
     bit = bits[i];
-    if(!bit || bit === ' ') {
-      continue;
-    }
+    if(!bit) continue;
 
     num = parseFloat(bit);
     if(isNaN(num)) {
