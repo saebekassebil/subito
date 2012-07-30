@@ -81,8 +81,8 @@ task({'default': ['lint', 'build']}, function(parameters) {
 desc('Builds the files required by the examples');
 task('examples', function() {
   // Build the subito.font.min.js
-  var buildTask = jake.Task['build'];
-  var tasks = {
+  var buildTask = jake.Task['build'], active, i, tasks;
+  tasks = {
     'minified font file': {
       args: ['font', 'minify'],
       run: false
@@ -96,8 +96,17 @@ task('examples', function() {
 
   function taskCallback() {
     console.log('');
-    for(var i in tasks) {
+
+    // Reset settings
+    if(active) {
+      tasks[active].args.forEach(function(arg) {
+        settings[arg] = !settings[arg];
+      });
+    }
+
+    for(i in tasks) {
       if(!tasks[i].run) {
+        active = i;
         log('Building ' + i);
         tasks[i].run = true;
         buildTask.reenable();
