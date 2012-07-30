@@ -77,6 +77,43 @@ task({'default': ['lint', 'build']}, function(parameters) {
   // Nothing to do here...
 });
 
+// Builds the files required for running the examples
+desc('Builds the files required by the examples');
+task('examples', function() {
+  // Build the subito.font.min.js
+  var buildTask = jake.Task['build'];
+  var tasks = {
+    'minified font file': {
+      args: ['font', 'minify'],
+      run: false
+    },
+
+    'minified file': {
+      args: ['minify'],
+      run: false
+    }
+  };
+
+  function taskCallback() {
+    console.log('');
+    for(var i in tasks) {
+      if(!tasks[i].run) {
+        log('Building ' + i);
+        tasks[i].run = true;
+        buildTask.reenable();
+        buildTask.invoke.apply(buildTask, tasks[i].args);
+
+        return;
+      }
+    }
+
+    complete();
+  }
+
+  buildTask.addListener('complete', taskCallback);
+  taskCallback();
+}, {async: true});
+
 // Building, which means concatenating and 
 // optionally minifying all source files.
 desc('Concatenates all files into build/subito.js');
@@ -93,7 +130,7 @@ task('build', function() {
       log('Ignoring invalid settings: ' + el, 'warn');
     }
   });
-  
+
   log('Building Subito');
 
   // Ensure build directory exists
@@ -110,7 +147,7 @@ task('build', function() {
   mingler.on('complete', function(concatenation) {
     // Should the source be minified?
     if(settings.minify) {
-      var ugly, jsp, pro, ast, ratio, compressed;
+      var ugly, ast, ratio, compressed;
       try {
         ugly = require('uglify-js');
       } catch(e) {
@@ -119,14 +156,12 @@ task('build', function() {
       }
 
       log('Minifying');
-      jsp = ugly.parser;
-      pro = ugly.uglify;
 
-      ast = jsp.parse(concatenation);
-      ast = pro.ast_mangle(ast);
-      ast = pro.ast_squeeze(ast);
+      ast = ugly.parser.parse(concatenation);
+      ast = ugly.uglify.ast_mangle(ast);
+      ast = ugly.uglify.ast_squeeze(ast);
 
-      compressed = pro.gen_code(ast);
+      compressed = ugly.uglify.gen_code(ast);
       ratio = 100 - (compressed.length/concatenation.length) * 100;
       ratio = ratio.toString().substr(0, 4);
 
@@ -141,6 +176,13 @@ task('build', function() {
     log('Writing to output file \'' + filename + '\'');
     fs.writeFileSync(kBuildDir + filename, concatenation, 'utf8');
     log('Concatenation completed - Goodbye!');
+
+    // Clear listeners
+    mingler.un('complete');
+    mingler.un('error');
+    mingler.un('warning');
+    mingler.un('concatenate');
+    complete();
   });
 
   mingler.on('error', function(error) {
@@ -162,7 +204,7 @@ task('build', function() {
     } else if(settings.noparsers && feedback.filename.indexOf('parsers/') == 0) {
       feedback.discard();
       log('Ignoring parser file ' + feedback.filename, 'info', 'grey');
-    }  else {
+    } else {
       log("Concatenating: " + feedback.filename, 'info', 'grey');
     }
   });
@@ -170,7 +212,7 @@ task('build', function() {
   mingler.mingle(kMainFile, function(concatenation) {
     process.chdir('../');
   });
-});
+}, {async: true});
 
 // Lints the files according to .jshintrc
 desc('Lint all files according to coding standards');
