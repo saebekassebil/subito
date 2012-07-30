@@ -7,7 +7,7 @@ Subito.Parsers.MusicJSON = (function() {
   }
 
   function parseMeasure(measure) {
-    var subitoMeasure = new SubitoMeasure(), subitoNote, note,
+    var subitoMeasure = new SubitoMeasure(), subitoNote, note, length,
         notes = [], beam, tryBeam = false, name, key, clef, time, i, subitoClef;
 
     if (measure.attributes) {
@@ -21,7 +21,7 @@ Subito.Parsers.MusicJSON = (function() {
 
       // Key
       if ((key = measure.attributes.key)) {
-        key = parseInt(key.fifths);
+        key = parseInt(key.fifths, 10);
         for(var akey in SubitoKey.Keys) {
           if(SubitoKey.Keys[akey] === key) {
             subitoMeasure.setKey(new SubitoKey(akey));
@@ -32,7 +32,8 @@ Subito.Parsers.MusicJSON = (function() {
       // Clef
       if ((clef = measure.attributes.clef)) {
         subitoClef = new SubitoClef(clef.sign.toLowerCase());
-        subitoClef.line = 3 - (parseInt(clef.line) - 2); // Different ways of counting
+        // MusicXML/JSON count lines from below, Subito from the top, thus:
+        subitoClef.line = 3 - (parseInt(clef.line, 10) - 2);
         subitoMeasure.setClef(subitoClef);
       }
     }

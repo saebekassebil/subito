@@ -7,7 +7,9 @@ function SubitoGlyph(glyph) {
   // Compile string-path to array-format
   for(var i = 0, length = bits.length; i < length; i++) {
     bit = bits[i];
-    if(!bit) continue;
+    if(!bit) {
+      continue;
+    }
 
     num = parseFloat(bit);
     if(isNaN(num)) {
