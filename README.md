@@ -35,6 +35,10 @@ The main file I use for testing is located at `test/index.html` and this is wher
 you can see the programmatic usage of the library. A more extravagant example is
 found in `examples/scales.html` and a live editor example in `examples/parsing.html`
 
+Before running the examples you should build the required concatenated files:
+
+    $ jake examples
+
 ## Usage
 
 Right now I haven't made any documentation of the code, besides those notes
