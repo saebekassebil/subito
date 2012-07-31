@@ -38,7 +38,7 @@ SubitoChord.prototype = {
       y = outer[0].g.y;
       pos = outer[1].getMetrics().position;
       if(pos >= 6) {
-        stem += (pos + 0.5 - 6) * ls + settings.measure.linewidth/2;
+        stem += (pos - 6) * ls + settings.measure.linewidth/2;
       }
 
       ctx.beginPath();
@@ -51,7 +51,7 @@ SubitoChord.prototype = {
       y = outer[1].g.y;
       pos = outer[0].getMetrics().position;
       if(pos < -1) {
-        stem += Math.abs(pos + 1 + 0.5) * ls + settings.measure.linewidth/2;
+        stem += Math.abs(pos + 1) * ls + settings.measure.linewidth/2;
       }
 
       ctx.beginPath();

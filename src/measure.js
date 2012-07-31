@@ -95,14 +95,14 @@ SubitoMeasure.prototype = {
     // Draw barline
     if(this.barline === 'single') {
       ctx.beginPath();
-      ctx._exMoveTo(xshift + metric.width + 0.5, yshift);
-      ctx._exLineTo(xshift + metric.width + 0.5, yshift + y);
+      ctx._exMoveTo(xshift + metric.width, yshift);
+      ctx._exLineTo(xshift + metric.width, yshift + y);
       ctx.closePath();
       ctx.stroke();
     } else if(this.barline === 'final') {
       ctx.beginPath();
-      ctx._exMoveTo(xshift + metric.width - 7.5, yshift);
-      ctx._exLineTo(xshift + metric.width - 7.5, yshift + y);
+      ctx._exMoveTo(xshift + metric.width - 7, yshift);
+      ctx._exLineTo(xshift + metric.width - 7, yshift + y);
       ctx.closePath();
       ctx.stroke();
 

@@ -84,9 +84,9 @@ SubitoNote.prototype = {
 
     // Extend stem to touch middle line
     if(direction === 'up' && pos >= 6 && !this.g.stemlength) {
-      stemlength += (pos + 0.5 - 6) * ls + settings.measure.linewidth/2;
+      stemlength += (pos - 6) * ls + settings.measure.linewidth/2;
     } else if(direction === 'down' && pos < -1 && !this.g.stemlength) {
-      stemlength += Math.abs(pos + 1 + 0.5) * ls + settings.measure.linewidth/2;
+      stemlength += Math.abs(pos + 1) * ls + settings.measure.linewidth/2;
     }
 
     // Render stem if any and not part of a chord If it's part of a chord,
@@ -94,7 +94,7 @@ SubitoNote.prototype = {
     if(this.tnote.duration >= 2 && !this.chord) {
       if(direction === 'up') {
         stemx = gx +
-          font.glyphs[head].hoz * font.scale.x - 0.5;
+          font.glyphs[head].hoz * font.scale.x - settings.note.stemwidth/2;
 
         ctx.beginPath();
         ctx._exMoveTo(stemx, yshift + y);

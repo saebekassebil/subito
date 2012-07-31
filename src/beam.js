@@ -85,8 +85,8 @@ SubitoBeam.prototype = {
     if (beamNumber > 0) {
       if (stem === 'up') {
         ftx = fnote.x + headwidth - stemwidth;
-        fty = fnote.y - fnote.stemlength - (beamwidth / 2) + yshift - 0.5;
-        fby = fnote.y - fnote.stemlength + (beamwidth / 2) + yshift - 0.5;
+        fty = fnote.y - fnote.stemlength - (beamwidth / 2) + yshift;
+        fby = fnote.y - fnote.stemlength + (beamwidth / 2) + yshift;
 
         ltx = lnote.x + headwidth;
         lty = fty + (lnote.x - fnote.x + stemwidth * 2) * maxslope;

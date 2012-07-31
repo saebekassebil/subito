@@ -29,6 +29,9 @@
         var svg = document.getElementById('testsvg')
         var canvas = document.getElementById('testcanvas');
 
+        svg.setAttribute('width', (window.innerWidth - 40).toString() + 'px');
+        canvas.setAttribute('width', (window.innerWidth - 40).toString() + 'px');
+
         var subitosvg = new Subito(svg);
         var subitocanvas = new Subito(canvas);
 
@@ -116,9 +119,9 @@
         measure2.addContext(mnote8);
         measure2.addContext(mnote9);
         measure2.addContext(mnote10);
-        measure2.setBarline('final');
 
         measure3.addContext(xnote1);
+        measure3.setBarline('final');
 
         stave.setKey(key);
         stave.setTime(time);
@@ -153,7 +156,7 @@
       }
 
       #wrapper {
-        margin: 2em;
+        margin: 20px;
       }
 
       #testsvg {
@@ -168,8 +171,8 @@
   </head>
   <body>
     <div id="wrapper">
-      <svg id="testsvg" height="250" width="1000"></svg>
-      <canvas id="testcanvas" height="250" width="1000"></canvas>
+      <svg id="testsvg" height="250" width="1500"></svg>
+      <canvas id="testcanvas" height="250" width="1500"></canvas>
     </div>
   </body>
 </html>
