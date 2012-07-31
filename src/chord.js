@@ -20,9 +20,45 @@ SubitoChord.prototype = {
   },
 
   render: function chordRender(renderer) {
-    var i, n, notes = this.notes;
+    var i, n, notes = this.notes, dir, x, y, ctx = renderer.context, stem,
+        yshift = this.measure.g.pen.y, settings = renderer.settings,
+        ls = settings.measure.linespan, pos, outer;
+    // Render notes
     for(i = 0, n = notes.length; i < n; i++) {
       notes[i].render(renderer);
+    }
+
+    // Render stem
+    dir = this.getStem();
+    outer = this.getOuterNotes();
+
+    stem = renderer.settings.note.stem;
+    if(dir === 'up') {
+      x = outer[0].g.x + outer[0].getMetrics(renderer).headwidth;
+      y = outer[0].g.y;
+      pos = outer[1].getMetrics().position;
+      if(pos >= 6) {
+        stem += (pos + 0.5 - 6) * ls + settings.measure.linewidth/2;
+      }
+
+      ctx.beginPath();
+      ctx._exMoveTo(x, y);
+      ctx._exLineTo(x, outer[1].g.y-stem);
+      ctx.closePath();
+      ctx.stroke();
+    } else {
+      x = outer[0].g.x;
+      y = outer[1].g.y;
+      pos = outer[0].getMetrics().position;
+      if(pos < -1) {
+        stem += Math.abs(pos + 1 + 0.5) * ls + settings.measure.linewidth/2;
+      }
+
+      ctx.beginPath();
+      ctx._exMoveTo(x, y);
+      ctx._exLineTo(x, outer[0].g.y+stem);
+      ctx.closePath();
+      ctx.stroke();
     }
   },
 
@@ -66,6 +102,25 @@ SubitoChord.prototype = {
     } else {
       return (this.cache.stem = 'up');
     }
+  },
+
+  getOuterNotes: function chordGetOuterNotes() {
+    var lowest, lowestPos, highest, highestPos, i, n, notes = this.notes, pos;
+
+    for(i = 0, n = notes.length; i < n; i++) {
+      pos = notes[i].getMetrics().position;
+      if(!lowestPos || pos > lowestPos) {
+        lowest = notes[i];
+        lowestPos = pos;
+      }
+
+      if (!highestPos || pos < highestPos) {
+        highest = notes[i];
+        highestPos = pos;
+      }
+    }
+
+    return [lowest, highest];
   }
 };
 

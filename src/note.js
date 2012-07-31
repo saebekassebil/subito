@@ -83,10 +83,32 @@ SubitoNote.prototype = {
     var stemlength = this.g.stemlength || settings.note.stem;
 
     // Extend stem to touch middle line
-    if(direction === 'up' && pos >= 6 && !this.g.stemLength) {
+    if(direction === 'up' && pos >= 6 && !this.g.stemlength) {
       stemlength += (pos + 0.5 - 6) * ls + settings.measure.linewidth/2;
     } else if(direction === 'down' && pos < -1 && !this.g.stemlength) {
       stemlength += Math.abs(pos + 1 + 0.5) * ls + settings.measure.linewidth/2;
+    }
+
+    // Render stem if any and not part of a chord If it's part of a chord,
+    // the stem rendering will be done by SubitoChord#render
+    if(this.tnote.duration >= 2 && !this.chord) {
+      if(direction === 'up') {
+        stemx = gx +
+          font.glyphs[head].hoz * font.scale.x - 0.5;
+
+        ctx.beginPath();
+        ctx._exMoveTo(stemx, yshift + y);
+        ctx._exLineTo(stemx, yshift + y-stemlength);
+        ctx.closePath();
+        ctx.stroke();
+      } else {
+        stemx = gx;
+        ctx.beginPath();
+        ctx._exMoveTo(stemx, yshift + y);
+        ctx._exLineTo(stemx, yshift + y+stemlength);
+        ctx.closePath();
+        ctx.stroke();
+      }
     }
 
     // Render flag if any
@@ -114,27 +136,6 @@ SubitoNote.prototype = {
 
       this.beams[0].render(renderer);
       delete renderer.flags.beamNumber;
-    }
-
-    // Render stem if any
-    if(this.tnote.duration >= 2) {
-      if(direction === 'up') {
-        stemx = gx +
-          font.glyphs[head].hoz * font.scale.x - 0.5;
-
-        ctx.beginPath();
-        ctx._exMoveTo(stemx, yshift + y);
-        ctx._exLineTo(stemx, yshift + y-stemlength);
-        ctx.closePath();
-        ctx.stroke();
-      } else {
-        stemx = gx;
-        ctx.beginPath();
-        ctx._exMoveTo(stemx, yshift + y);
-        ctx._exLineTo(stemx, yshift + y+stemlength);
-        ctx.closePath();
-        ctx.stroke();
-      }
     }
 
     this.g.rendered = true;
