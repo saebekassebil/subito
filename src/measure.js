@@ -126,7 +126,7 @@ SubitoMeasure.prototype = {
       var clefY = renderer.settings.measure.linespan * clef.line;
       clef.render(renderer, xshift, yshift + clefY);
 
-      xshift += clef.getMetrics(renderer).width;
+      xshift = Math.round(xshift + clef.getMetrics(renderer).width);
     } else {
       xshift += 20; // Little margin in measures
     }

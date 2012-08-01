@@ -84,19 +84,19 @@ SubitoBeam.prototype = {
     var ftx, fty, fby, ltx, lty, lby;
     if (beamNumber > 0) {
       if (stem === 'up') {
-        ftx = fnote.x + headwidth - stemwidth;
+        ftx = fnote.x + headwidth - stemwidth + stemwidth / 2;
         fty = fnote.y - fnote.stemlength - (beamwidth / 2) + yshift;
         fby = fnote.y - fnote.stemlength + (beamwidth / 2) + yshift;
 
-        ltx = lnote.x + headwidth;
+        ltx = lnote.x + headwidth - stemwidth / 2;
         lty = fty + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
         lby = fby + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
       } else {
-        ftx = fnote.x - stemwidth / 2;
+        ftx = fnote.x;
         fty = fnote.y + fnote.stemlength - (beamwidth / 2) - yshift;
         fby = fnote.y + fnote.stemlength + (beamwidth / 2) - yshift;
 
-        ltx = lnote.x + stemwidth / 2;
+        ltx = lnote.x;
         lty = fty + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
         lby = fby + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
       }
