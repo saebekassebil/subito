@@ -8,13 +8,13 @@ Subito.Parsers.MusicJSON = (function() {
 
   function parseMeasure(measure) {
     var subitoMeasure = new SubitoMeasure(), subitoNote, note, length,
-        notes = [], beam, tryBeam = false, name, key, clef, time, i, subitoClef,
-        activeTime = 4, duration, divisions, activeDivison = null;
+        notes = [], beam, tryBeam, name, key, clef, time, i, subitoClef,
+        activeTime = 4, duration, divisions, activeDivision;
 
     if (measure.attributes) {
       // Divisions
       if ((divisions = measure.attributes.divisions)) {
-        activeDivision = parseInt(divisions);
+        activeDivision = parseInt(divisions, 10);
       }
       // Time
       if ((time = measure.attributes.time)) {

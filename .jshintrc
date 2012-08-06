@@ -18,7 +18,8 @@
     "SubitoVoice",
     "SubitoGraphicSystemLine",
     "SubitoGraphicStaveLine",
-    "teoria"
+    "teoria",
+    "DOMParser"
   ],
 
   "maxlen":   80,
@@ -36,5 +37,6 @@
   "forin": true,
   "latedef": true,
   "undef": true,
-  "evil": false
+  "evil": false,
+  "unused": true
 }

@@ -1,6 +1,7 @@
 var path    = require('path'),
     fs      = require('fs'),
     mingler = require('mingler'),
+    existsSync = 'existsSync' in fs ? fs.existsSync : path.existsSync,
     colors;
 
 try {
@@ -143,7 +144,7 @@ task('build', function() {
   log('Building Subito');
 
   // Ensure build directory exists
-  exists = path.existsSync(kBuildDir);
+  exists = existsSync(kBuildDir);
   if(!exists) {
     log('Creating build directory');
     fs.mkdirSync(kBuildDir, 0777);
