@@ -132,15 +132,10 @@
         system.addContext(stave);
         score.addContext(system);
         subitosvg.setScore(score);
-
-        //console.profile('SVG');
         subitosvg.render();
-        //console.profileEnd('SVG');
 
         subitocanvas.setScore(score);
-       // console.profile('Canvas');
         subitocanvas.render();
-       // console.profileEnd('Canvas');
       }, false);
     </script>
 

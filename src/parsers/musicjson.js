@@ -3,7 +3,7 @@
  **/
 Subito.Parsers.MusicJSON = (function() {
   function constructor(source) {
-    this.source = JSON.parse(source);
+    this.source = (typeof source === 'string') ? JSON.parse(source) : source;
   }
 
   function parseMeasure(measure) {

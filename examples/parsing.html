@@ -8,11 +8,14 @@
         var canvas = document.getElementById('subito_canvas');
         var editor = document.getElementById('editor');
         var subito = new Subito(canvas);
+        var languages = ['musicjson', 'musicxml'];
+        var activeLanguage = 0;
+
         subito.renderer.settings.scale = 1;
 
         function renderScore(source, language) {
           try {
-            subito.parse(source, language || 'musicjson');
+            subito.parse(source, language);
 
             // Purge canvas
             while (canvas.firstChild) {
@@ -22,6 +25,10 @@
             subito.render();
             editor.style.background = '#EBFAC8';
           } catch(e) {
+            activeLanguage++;
+            if(activeLanguage < languages.length) {
+              return renderScore(source, languages[activeLanguage]);
+            }
             // Invalid score
             editor.style.background = '#FFBABA';
             console.log(e.toString(), e.stack);
@@ -29,11 +36,15 @@
         }
 
         editor.addEventListener('keyup', function() {
-          renderScore(editor.value, 'musicjson');
+          if(activeLanguage >= languages.length) {
+            activeLanguage = 0;
+          }
+
+          renderScore(editor.value, languages[activeLanguage] );
         }, false);
 
         if (editor.value.length !== 0) {
-          renderScore(editor.value, 'musicjson');
+          renderScore(editor.value, languages[activeLanguage]);
         }
       }, false);
     </script>
