@@ -8,11 +8,18 @@ Subito.Parsers.MusicJSON = (function() {
 
   function parseMeasure(measure) {
     var subitoMeasure = new SubitoMeasure(), subitoNote, note, length,
-        notes = [], beam, tryBeam = false, name, key, clef, time, i, subitoClef;
+        notes = [], beam, tryBeam = false, name, key, clef, time, i, subitoClef,
+        activeTime = 4, duration, divisions, activeDivison = null;
 
     if (measure.attributes) {
+      // Divisions
+      if ((divisions = measure.attributes.divisions)) {
+        activeDivision = parseInt(divisions);
+      }
       // Time
       if ((time = measure.attributes.time)) {
+        activeTime = time['beat-type'];
+
         subitoMeasure.setTime({
           beats: time.beats,
           unit: time['beat-type']
@@ -42,10 +49,11 @@ Subito.Parsers.MusicJSON = (function() {
       for(i = 0, length = measure.note.length; i < length; i++) {
         note = measure.note[i];
 
+        duration = activeDivision / note.duration * activeTime;
         name = note.pitch.step + note.pitch.octave;
-        subitoNote = new SubitoNote(name, note.duration);
+        subitoNote = new SubitoNote(name, duration);
 
-        if(note.duration >= 8) {
+        if(duration >= 8) {
           if(tryBeam) {
             beam = beam || new SubitoBeam();
             if(beam.notes.length === 0) {
@@ -64,7 +72,8 @@ Subito.Parsers.MusicJSON = (function() {
     } else {
       note = measure.note;
       name = note.pitch.step + note.pitch.octave;
-      subitoNote = new SubitoNote(name, note.duration);
+      duration = activeDivision / note.duration * activeTime;
+      subitoNote = new SubitoNote(name, duration);
       subitoMeasure.addContext(subitoNote);
     }
 
