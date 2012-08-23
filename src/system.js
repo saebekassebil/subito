@@ -25,8 +25,7 @@ SubitoSystem.prototype = {
     this.g.pen.x = this.score.g.pen.x;
     this.g.pen.y = this.score.g.pen.y;
     for(var i = 0, length = this.contexts.length; i < length; i++) {
-      var context = this.contexts[i];
-      context.render(renderer);
+      this.contexts[i].render(renderer);
     }
   },
 

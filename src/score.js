@@ -29,16 +29,16 @@ SubitoScore.prototype = {
   render: function scoreRender(renderer) {
     this.g.pen.x = renderer.settings.score.marginleft;
     this.g.pen.y = renderer.settings.score.margintop;
-    var context;
+    var context, i, length;
 
-    for(var i = 0, length = this.contexts.length; i < length; i++) {
+    for(i = 0, length = this.contexts.length; i < length; i++) {
       context = this.contexts[i];
       if(context instanceof SubitoSystem) {
         context.format(renderer);
-        this.g.pen.y += this.contexts[i].getMetrics(renderer).y;
+        this.g.pen.y += context.getMetrics(renderer).y;
       }
 
-      this.contexts[i].render(renderer);
+      context.render(renderer);
     }
   }
 };
