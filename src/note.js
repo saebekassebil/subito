@@ -1,6 +1,6 @@
 function SubitoNote(name, duration) {
   try {
-    this.tnote = new teoria.TeoriaNote(name, duration);
+    this.tnote = new teoria.TeoriaNote(name, {value: duration});
   } catch(e) {
     throw new Subito.Exception('InvalidNote', e.message);
   }
@@ -91,7 +91,7 @@ SubitoNote.prototype = {
 
     // Render stem if any and not part of a chord If it's part of a chord,
     // the stem rendering will be done by SubitoChord#render
-    if(this.tnote.duration >= 2 && !this.chord) {
+    if(this.tnote.duration.value >= 2 && !this.chord) {
       if(direction === 'up') {
         stemx = gx +
           font.glyphs[head].hoz * font.scale.x - settings.note.stemwidth/2;
@@ -112,7 +112,7 @@ SubitoNote.prototype = {
     }
 
     // Render flag if any
-    if(this.tnote.duration >= 8 && this.beams.length === 0) {
+    if(this.tnote.duration.value >= 8 && this.beams.length === 0) {
       var flag = this.getFlagGlyphName();
       var flagx = gx;
       var flagy = yshift;
@@ -145,11 +145,11 @@ SubitoNote.prototype = {
 
   getHeadGlyphName: function noteGetHeadGlyphName() {
     var name;
-    if(this.tnote.duration >= 4) {
+    if(this.tnote.duration.value >= 4) {
       name = 'noteheads.s2';
-    } else if(this.tnote.duration === 2) {
+    } else if(this.tnote.duration.value === 2) {
       name = 'noteheads.s1';
-    } else if(this.tnote.duration === 1) {
+    } else if(this.tnote.duration.value === 1) {
       name = 'noteheads.s0';
     }
 
@@ -157,7 +157,7 @@ SubitoNote.prototype = {
   },
 
   getFlagGlyphName: function noteGetFlagGlyphName() {
-    var duration = this.tnote.duration;
+    var duration = this.tnote.duration.value;
     var direction = this.getStem(this.measure.getClef());
     if(duration === 8) {
       return (direction === 'up') ? 'flags.u3' : 'flags.d3';
@@ -267,7 +267,7 @@ SubitoNote.prototype = {
   },
 
   getDUnits: function noteGetDUnits() {
-    return SubitoMeasure.DurationUnits / this.tnote.duration;
+    return SubitoMeasure.DurationUnits / this.tnote.duration.value;
   }
 };
 

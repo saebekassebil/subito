@@ -83,7 +83,7 @@ Subito._isArray = function(element) {
 };
 
 //=include standalone.js
-//=include ../externals/teoria/teoria.js
+//=include ../external/teoria/dist/teoria.js
 
 //=include score.js
 //=include system.js

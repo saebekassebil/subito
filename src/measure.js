@@ -158,12 +158,13 @@ SubitoMeasure.prototype = {
       context = this.contexts[i];
       if(context instanceof SubitoNote) {
         context.render(renderer);
-        shift = (metric.rwidth/time.count) / (context.tnote.duration/time.unit);
+        shift = (metric.rwidth/time.count) /
+          (context.tnote.duration.value/time.unit);
         this.g.pen.x += Math.max(shift, context.getMetrics(renderer).headwidth);
       } else if(context instanceof SubitoChord) {
         context.render(renderer);
         shift = (metric.rwidth/time.count) /
-          (context.notes[0].tnote.duration/time.unit);
+          (context.notes[0].tnote.duration.value/time.unit);
         this.g.pen.x += shift;
       }
     }

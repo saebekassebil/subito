@@ -74,13 +74,37 @@ function collect(filepath, files, ignore) {
 
 // Default task - build
 desc('Default both lints and builds the project');
-task({'default': ['lint', 'build']}, function(parameters) {
+task({'default': ['external', 'lint', 'build']}, function(parameters) {
   // Nothing to do here...
+});
+
+// External task, builds teoria
+desc('Build the external resources (Teoria)');
+task('external', {async: true}, function() {
+  var curdir = process.cwd();
+  process.chdir('external/teoria');
+
+  if (!existsSync('README.md')) {
+    process.chdir(curdir);
+    return fail('You need to init and update the submodules. Check the README');
+  }
+
+  if (!existsSync('teoria.js')) {
+    log('Building externals...');
+    jake.exec('jake build', function() {
+      log('Successfully built external resources');
+      process.chdir(curdir);
+      complete();
+    }, {printStdout: true, printStderr: true});
+  } else {
+    process.chdir(curdir);
+    complete();
+  }
 });
 
 // Builds the files required for running the examples
 desc('Builds the files required by the examples');
-task('examples', function() {
+task({'examples': ['external']}, function() {
   // Build the subito.font.min.js
   var buildTask = jake.Task['build'], active, i, tasks;
   tasks = {
@@ -127,7 +151,7 @@ task('examples', function() {
 // Building, which means concatenating and 
 // optionally minifying all source files.
 desc('Concatenates all files into build/subito.js');
-task('build', function() {
+task({'build': ['external']}, function() {
   var params, exists, concatenation, filename;
   filename = kBuildFilename;
 
