@@ -17,6 +17,7 @@ SubitoBeam.prototype = {
     if (this.notes.length < 2 || !this.ready()) {
       return false;
     }
+
     var ctx = renderer.context, notes = this.notes, notea, noteb, slope,
         maxslope = 0, peak, newy, settings = renderer.settings,
         beamwidth = renderer.settings.beam.width,
@@ -31,7 +32,7 @@ SubitoBeam.prototype = {
     }
 
     if (beamNumber > 0) { // This is not the first beam
-      maxslope = notes[0].beams[0].slope;
+      maxslope = renderer.flags.beamSlope;
       peak = 0;
     } else { // This is the first beam
       for(; i < length; i++) {
@@ -47,13 +48,14 @@ SubitoBeam.prototype = {
           peak = i;
           break;
         }
+
+        // If the slope is too steep, we'll adjust to use the default slope
+        if (Math.abs(maxslope) > settings.beam.slope) {
+          // sign(maxslope) * defslope
+          maxslope = Math.abs(maxslope)/maxslope * settings.beam.slope;
+        }
       }
 
-      // If the slope is too steep, we'll adjust to use the default slope
-      if (Math.abs(maxslope) > settings.beam.slope) {
-        // sign(maxslope) * defslope
-        maxslope = Math.abs(maxslope)/maxslope * settings.beam.slope;
-      }
 
       for(i = 0, length = length + 1; i < length; i++) {
         notea = notes[i];
@@ -84,13 +86,13 @@ SubitoBeam.prototype = {
     var ftx, fty, fby, ltx, lty, lby;
     if (beamNumber > 0) {
       if (stem === 'up') {
-        ftx = fnote.x + headwidth - stemwidth + stemwidth / 2;
-        fty = fnote.y - fnote.stemlength - (beamwidth / 2) + yshift;
-        fby = fnote.y - fnote.stemlength + (beamwidth / 2) + yshift;
+        ftx = fnote.x + headwidth - stemwidth / 2;
+        fty = fnote.y - fnote.stemlength - beamwidth / 2 + yshift;
+        fby = fnote.y - fnote.stemlength + beamwidth / 2 + yshift;
 
         ltx = lnote.x + headwidth - stemwidth / 2;
-        lty = fty + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
-        lby = fby + (lnote.x - fnote.x + stemwidth * 2) * maxslope;
+        lty = fty + (lnote.x - fnote.x /*+ stemwidth * 2*/) * maxslope;
+        lby = fby + (lnote.x - fnote.x /*+ stemwidth * 2*/) * maxslope;
       } else {
         ftx = fnote.x;
         fty = fnote.y + fnote.stemlength - (beamwidth / 2) - yshift;
@@ -102,8 +104,8 @@ SubitoBeam.prototype = {
       }
     } else if (stem === 'up') {
       ftx = fnote.x + headwidth - stemwidth;
-      fty = fnote.y - (beamwidth / 2) - fnote.stemlength;
-      fby = fnote.y + (beamwidth / 2) - fnote.stemlength;
+      fty = fnote.y - beamwidth / 2 - fnote.stemlength;
+      fby = fnote.y + beamwidth / 2 - fnote.stemlength;
       
       ltx = lnote.x + headwidth;
       lty = lnote.y - (beamwidth - 2) - lnote.stemlength;
@@ -130,6 +132,7 @@ SubitoBeam.prototype = {
     this.g.rendered = true;
     if (this.nextBeam instanceof SubitoBeam) {
       renderer.flags.beamNumber++;
+      renderer.flags.beamSlope = maxslope;
       this.nextBeam.render(renderer);
     }
   },
